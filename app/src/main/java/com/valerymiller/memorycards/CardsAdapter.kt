@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.card.view.*
 
 
-class CardsAdapter(val context: Context, val size: Int) : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
+class CardsAdapter(val context: Context, val size: Int)
+    : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
-        return CardViewHolder(LayoutInflater.from(context)
+        return CardViewHolder(context, LayoutInflater.from(context)
             .inflate(R.layout.card, parent, false))
     }
 
@@ -24,33 +25,38 @@ class CardsAdapter(val context: Context, val size: Int) : RecyclerView.Adapter<C
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
+        holder.startFlipAnimation.setTarget(holder.cardContainer)
+        holder.endFlipAnimation.setTarget(holder.cardContainer)
+        holder.cardContainer.setOnClickListener {
+            if (holder.open) return@setOnClickListener
+            else holder.flipCard()
+        }
+    }
+
+    class CardViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val startFlipAnimation = AnimatorInflater.loadAnimator(context,
             R.animator.card_flip) as AnimatorSet
         val endFlipAnimation = AnimatorInflater.loadAnimator(context,
             R.animator.card_flip_half) as AnimatorSet
-        startFlipAnimation.setTarget(holder.cardContainer)
-        endFlipAnimation.setTarget(holder.cardContainer)
 
-        holder.cardContainer.setOnClickListener {
-            holder.state = !holder.state
+        val cardContainer = itemView.cardContainer
+        val imageView = itemView.imageView
+        var open = false
+
+        fun flipCard() {
+            open = !open
             endFlipAnimation.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    holder.imageView.setImageResource(
-                        if (holder.state) R.drawable.ic_launcher_background
-                        else R.drawable.ic_launcher_background_back
+                    imageView.setImageResource(
+                        if (open) R.drawable.ic_launcher_background_back
+                        else R.drawable.ic_launcher_background
                     )
                 }
             })
             startFlipAnimation.start()
             endFlipAnimation.start()
         }
-    }
-
-    class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val cardContainer = itemView.cardContainer
-        val imageView = itemView.imageView
-        var state = true
     }
 
 }
