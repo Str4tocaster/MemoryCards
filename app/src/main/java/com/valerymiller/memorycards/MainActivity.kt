@@ -12,7 +12,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     var minCardNumber = 12
     var defaultNickname = "Player"
-    var spacing = 20
     var cardNumber = minCardNumber
     var nickname = defaultNickname
 
@@ -22,7 +21,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         minCardNumber = resources.getInteger(R.integer.card_number_min)
         defaultNickname = resources.getString(R.string.default_nickname)
-        spacing = resources.getInteger(R.integer.cards_spacing)
 
         btnSettings.setOnClickListener(this)
         btnTop.setOnClickListener(this)
@@ -52,6 +50,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val span = when(cardNumber) {
             12 -> 3
             else -> 4
+        }
+        val spacing = when(cardNumber) {
+            12 -> 20
+            16 -> 16
+            20 -> 12
+            else -> 8
         }
         recyclerView.layoutManager = GridLayoutManager(this, span)
         recyclerView.adapter = CardsAdapter(this, cardNumber)

@@ -4,5 +4,4 @@
     <integer name="card_flip_time_half">250</integer>
     <integer name="card_number_min">12</integer>
     <integer name="card_number_max">24</integer>
-    <integer name="cards_spacing">20</integer>
 </resources>
