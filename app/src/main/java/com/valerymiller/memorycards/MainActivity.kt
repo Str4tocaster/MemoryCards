@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -27,7 +28,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when(view) {
-            btnSettings -> Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+            btnSettings -> {
+                SettingsBottomSheetFragment().show(supportFragmentManager, "settings")
+            }
+
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
             btnRestart -> Toast.makeText(this, "Restart", Toast.LENGTH_SHORT).show()
         }
