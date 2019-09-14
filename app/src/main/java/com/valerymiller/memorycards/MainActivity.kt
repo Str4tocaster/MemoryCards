@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnRestart.setOnClickListener(this)
 
         loadSettings()
-        updateRecyclerView()
+        updateScreen()
     }
 
     override fun onClick(view: View?) {
@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     fun onSettingsClosed() {
         loadSettings()
-        updateRecyclerView()
+        updateScreen()
     }
 
-    private fun updateRecyclerView() {
+    private fun updateScreen() {
         val span = when(cardNumber) {
             8 -> 2
             12 -> 3
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             recyclerView.removeItemDecorationAt(0)
         } catch (e: Exception) {}
         recyclerView.addItemDecoration(GridSpacingItemDecoration(span, 20, true))
+        tvNickname.text = nickname
     }
 
     private fun loadSettings() {
