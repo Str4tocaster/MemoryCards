@@ -2,22 +2,27 @@ package com.valerymiller.memorycards
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    var cardNumber = 8
-    var nickname = "Player"
+    var minCardNumber = 12
+    var defaultNickname = "Player"
+    var spacing = 20
+    var cardNumber = minCardNumber
+    var nickname = defaultNickname
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        minCardNumber = resources.getInteger(R.integer.card_number_min)
+        defaultNickname = resources.getString(R.string.default_nickname)
+        spacing = resources.getInteger(R.integer.cards_spacing)
 
         btnSettings.setOnClickListener(this)
         btnTop.setOnClickListener(this)
@@ -45,7 +50,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun updateScreen() {
         val span = when(cardNumber) {
-            8 -> 2
             12 -> 3
             else -> 4
         }
@@ -54,17 +58,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         try {
             recyclerView.removeItemDecorationAt(0)
         } catch (e: Exception) {}
-        recyclerView.addItemDecoration(GridSpacingItemDecoration(span, 20, true))
+        recyclerView.addItemDecoration(GridSpacingItemDecoration(span, spacing, true))
         tvNickname.text = nickname
     }
 
     private fun loadSettings() {
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         nickname = sharedPreferences?.getString(
-            SettingsBottomSheetFragment.constants.NICKNAME, "Player")?:"Player"
+            SettingsBottomSheetFragment.constants.NICKNAME, defaultNickname)?:defaultNickname
         cardNumber = sharedPreferences?.getInt(
-            SettingsBottomSheetFragment.constants.CARD_NUMBER, 8)?:8
-        Log.d("VALERA", nickname + " " + cardNumber)
+            SettingsBottomSheetFragment.constants.CARD_NUMBER, minCardNumber)?:minCardNumber
     }
 
 }

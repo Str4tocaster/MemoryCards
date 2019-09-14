@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MemoryCards</string>
+    <string name="default_nickname">Player</string>
 </resources>

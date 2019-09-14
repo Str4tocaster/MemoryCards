@@ -38,10 +38,10 @@
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:isb_max="16"
-            app:isb_min="8"
-            app:isb_progress="12"
-            app:isb_ticks_count="3"
+            app:isb_max="@integer/card_number_max"
+            app:isb_min="@integer/card_number_min"
+            app:isb_progress="@integer/card_number_min"
+            app:isb_ticks_count="4"
             app:isb_show_tick_marks_type="oval"
             app:isb_show_indicator="circular_bubble"
             app:isb_track_progress_color="@color/colorAccent"
@@ -66,7 +66,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginBottom="64dp"
-        android:hint="Player"
+        android:hint="@string/default_nickname"
         android:textSize="20sp"
         />
 

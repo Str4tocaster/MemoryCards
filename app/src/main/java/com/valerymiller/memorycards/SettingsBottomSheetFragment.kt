@@ -2,7 +2,6 @@ package com.valerymiller.memorycards
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,17 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
         val CARD_NUMBER = "card_number"
     }
 
-    var cardNumber = 8
+    var minCardNumber = 12
+    var defaultNickname = "Player"
+    var cardNumber = minCardNumber
     var edtNickname: EditText? = null
     var seekBar: IndicatorSeekBar? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        minCardNumber = resources.getInteger(R.integer.card_number_min)
+        defaultNickname = resources.getString(R.string.default_nickname)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -57,13 +64,14 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
         if (nickname.trim().isNotEmpty())
             ed?.putString(constants.NICKNAME, nickname)
         ed?.putInt(constants.CARD_NUMBER, cardNumber)
-        Log.d("VALERA", "save: " + ed?.commit())
+        ed?.commit()
     }
 
     private fun loadSettings() {
         val sharedPreferences = activity?.getPreferences(MODE_PRIVATE)
-        edtNickname?.setText(sharedPreferences?.getString(constants.NICKNAME, "Player")?:"Player")
-        cardNumber = sharedPreferences?.getInt(constants.CARD_NUMBER, 8)?:8
+        edtNickname?.setText(sharedPreferences?.getString(constants.NICKNAME,
+            defaultNickname)?:defaultNickname)
+        cardNumber = sharedPreferences?.getInt(constants.CARD_NUMBER, minCardNumber)?:minCardNumber
         seekBar?.setProgress(cardNumber.toFloat())
     }
 }
