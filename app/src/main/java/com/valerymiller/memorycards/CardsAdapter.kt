@@ -5,15 +5,32 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.content.Context
+import android.os.Handler
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.card.view.*
 
-
 class CardsAdapter(val context: Context, val size: Int)
     : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
+
+    private val openCards = mutableListOf<CardViewHolder>()
+
+    private val closeHandler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            closeCards()
+        }
+    }
+
+    private val hideHandler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            hideCards()
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder(context, LayoutInflater.from(context)
@@ -25,27 +42,31 @@ class CardsAdapter(val context: Context, val size: Int)
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.startFlipAnimation.setTarget(holder.cardContainer)
-        holder.endFlipAnimation.setTarget(holder.cardContainer)
+        holder.cardId = if (position % 2 == 0) 1 else 2 // change to true id
+        holder.flipAnimation.setTarget(holder.cardContainer)
+        holder.halfFlipAnimation.setTarget(holder.cardContainer)
         holder.cardContainer.setOnClickListener {
             if (holder.open) return@setOnClickListener
             else holder.flipCard()
         }
     }
 
-    class CardViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val startFlipAnimation = AnimatorInflater.loadAnimator(context,
+    inner class CardViewHolder(context: Context, itemView: View)
+        : RecyclerView.ViewHolder(itemView) {
+
+        val flipAnimation = AnimatorInflater.loadAnimator(context,
             R.animator.card_flip) as AnimatorSet
-        val endFlipAnimation = AnimatorInflater.loadAnimator(context,
+        val halfFlipAnimation = AnimatorInflater.loadAnimator(context,
             R.animator.card_flip_half) as AnimatorSet
 
         val cardContainer = itemView.cardContainer
         val imageView = itemView.imageView
         var open = false
+        var cardId = -1
 
         fun flipCard() {
             open = !open
-            endFlipAnimation.addListener(object : AnimatorListenerAdapter() {
+            halfFlipAnimation.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     imageView.setImageResource(
@@ -54,9 +75,49 @@ class CardsAdapter(val context: Context, val size: Int)
                     )
                 }
             })
-            startFlipAnimation.start()
-            endFlipAnimation.start()
+            if (open) this@CardsAdapter.onCardOpen(this@CardViewHolder)
+            flipAnimation.start()
+            halfFlipAnimation.start()
         }
+
+        fun hideCard() {
+            cardContainer.visibility = View.GONE
+        }
+    }
+
+    fun onCardOpen(holder: CardViewHolder) {
+        openCards.add(holder)
+        if (openCards.size > 1) {
+            if (openCards[0].cardId == openCards[1].cardId)
+                startHideTimer()
+            else startCloseTimer()
+        }
+    }
+
+    private fun startCloseTimer() {
+        Thread(Runnable {
+            Thread.sleep(1000)
+            closeHandler.sendEmptyMessage(1)
+        }).start()
+    }
+
+    private fun startHideTimer() {
+        Thread(Runnable {
+            Thread.sleep(1000)
+            hideHandler.sendEmptyMessage(1)
+        }).start()
+    }
+
+    private fun closeCards() {
+        openCards[0].flipCard()
+        openCards[1].flipCard()
+        openCards.clear()
+    }
+
+    private fun hideCards() {
+        openCards[0].hideCard()
+        openCards[1].hideCard()
+        openCards.clear()
     }
 
 }
