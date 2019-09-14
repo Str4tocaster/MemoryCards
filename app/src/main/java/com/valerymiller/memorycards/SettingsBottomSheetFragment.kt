@@ -2,6 +2,7 @@ package com.valerymiller.memorycards
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,12 @@ import kotlinx.android.synthetic.main.layout_settings.view.*
 
 class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
 
-    val NICKNAME = "nickname"
-    val CARD_NUMBER = "card_number"
+    object constants {
+        val NICKNAME = "nickname"
+        val CARD_NUMBER = "card_number"
+    }
 
     var cardNumber = 8
-
     var edtNickname: EditText? = null
     var seekBar: IndicatorSeekBar? = null
 
@@ -45,21 +47,23 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onPause() {
         super.onPause()
         saveSettings(cardNumber, edtNickname?.text.toString())
+        if (activity is MainActivity)
+            (activity as MainActivity).onSettingsClosed()
     }
 
-    fun saveSettings(cardNumber: Int, nickname: String) {
+    private fun saveSettings(cardNumber: Int, nickname: String) {
         val sharedPreferences = activity?.getPreferences(MODE_PRIVATE)
         val ed = sharedPreferences?.edit()
         if (nickname.trim().isNotEmpty())
-            ed?.putString(NICKNAME, nickname)
-        ed?.putInt(CARD_NUMBER, cardNumber)
-        ed?.apply()
+            ed?.putString(constants.NICKNAME, nickname)
+        ed?.putInt(constants.CARD_NUMBER, cardNumber)
+        Log.d("VALERA", "save: " + ed?.commit())
     }
 
-    fun loadSettings() {
+    private fun loadSettings() {
         val sharedPreferences = activity?.getPreferences(MODE_PRIVATE)
-        edtNickname?.setText(sharedPreferences?.getString(NICKNAME, "Player")?:"Player")
-        cardNumber = sharedPreferences?.getInt(CARD_NUMBER, 8)?:8
+        edtNickname?.setText(sharedPreferences?.getString(constants.NICKNAME, "Player")?:"Player")
+        cardNumber = sharedPreferences?.getInt(constants.CARD_NUMBER, 8)?:8
         seekBar?.setProgress(cardNumber.toFloat())
     }
 }

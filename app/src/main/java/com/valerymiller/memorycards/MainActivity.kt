@@ -1,17 +1,19 @@
 package com.valerymiller.memorycards
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    val span = 4
-    val size = 16
+    var cardNumber = 8
+    var nickname = "Player"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +23,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnTop.setOnClickListener(this)
         btnRestart.setOnClickListener(this)
 
-        recyclerView.layoutManager = GridLayoutManager(this, span)
-        recyclerView.adapter = CardsAdapter(this, size)
-        recyclerView.addItemDecoration(GridSpacingItemDecoration(span, 20, true))
+        loadSettings()
+        updateRecyclerView()
     }
 
     override fun onClick(view: View?) {
@@ -35,6 +36,34 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
             btnRestart -> Toast.makeText(this, "Restart", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun onSettingsClosed() {
+        loadSettings()
+        updateRecyclerView()
+    }
+
+    private fun updateRecyclerView() {
+        val span = when(cardNumber) {
+            8 -> 2
+            12 -> 3
+            else -> 4
+        }
+        recyclerView.layoutManager = GridLayoutManager(this, span)
+        recyclerView.adapter = CardsAdapter(this, cardNumber)
+        try {
+            recyclerView.removeItemDecorationAt(0)
+        } catch (e: Exception) {}
+        recyclerView.addItemDecoration(GridSpacingItemDecoration(span, 20, true))
+    }
+
+    private fun loadSettings() {
+        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+        nickname = sharedPreferences?.getString(
+            SettingsBottomSheetFragment.constants.NICKNAME, "Player")?:"Player"
+        cardNumber = sharedPreferences?.getInt(
+            SettingsBottomSheetFragment.constants.CARD_NUMBER, 8)?:8
+        Log.d("VALERA", nickname + " " + cardNumber)
     }
 
 }
