@@ -17,6 +17,7 @@ class CardsAdapter(val context: Context, val items: List<Card>)
     : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
 
     private val openCards = mutableListOf<CardViewHolder>()
+    private var hidedCards = 0
 
     private val closeHandler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -124,6 +125,9 @@ class CardsAdapter(val context: Context, val items: List<Card>)
         openCards[0].hideCard()
         openCards[1].hideCard()
         openCards.clear()
+        hidedCards += 2
+        if (hidedCards == items.size && context is MainActivity)
+            context.onWin()
     }
 
 }

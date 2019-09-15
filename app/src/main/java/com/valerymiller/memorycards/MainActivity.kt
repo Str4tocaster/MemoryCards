@@ -75,6 +75,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    fun onWin() {
+        timer.cancel()
+        Toast.makeText(this, "Congratulations!", Toast.LENGTH_LONG).show()
+    }
+
     private fun updateTime() {
         setTimeText(time + 1)
     }
