@@ -94,6 +94,7 @@ class CardsAdapter(val context: Context, val items: List<Card>)
             if (openCards[0].cardId == openCards[1].cardId)
                 startHideTimer()
             else startCloseTimer()
+            if (context is MainActivity) context.onActionCounterIncreased()
         }
     }
 

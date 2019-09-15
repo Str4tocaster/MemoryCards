@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var defaultNickname = "Player"
     var cardNumber = minCardNumber
     var nickname = defaultNickname
+    var actionCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +39,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
-            btnRestart -> Toast.makeText(this, "Restart", Toast.LENGTH_SHORT).show()
+            btnRestart -> {
+                updateScreen()
+            }
         }
     }
 
     fun onSettingsClosed() {
         loadSettings()
         updateScreen()
+    }
+
+    fun onActionCounterIncreased() {
+        actionCount++
+        tvActionsCount.text = "actions: " + actionCount.toString()
     }
 
     private fun updateScreen() {
@@ -65,6 +73,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } catch (e: Exception) {}
         recyclerView.addItemDecoration(GridSpacingItemDecoration(span, spacing, true))
         tvNickname.text = nickname
+        actionCount = 0
+        tvActionsCount.text = "actions: " + actionCount.toString()
     }
 
     private fun loadSettings() {
