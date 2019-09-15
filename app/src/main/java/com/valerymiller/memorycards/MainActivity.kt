@@ -2,11 +2,14 @@ package com.valerymiller.memorycards
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -16,6 +19,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var cardNumber = minCardNumber
     var nickname = defaultNickname
     var actionCount = 0
+    var time: Long = 0
+
+    var timer = Timer(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +57,30 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun onActionCounterIncreased() {
-        actionCount++
-        tvActionsCount.text = "actions: " + actionCount.toString()
+        setActionCountText(actionCount + 1)
+    }
+
+    fun onGameStarted() {
+        if (time == 0L) {
+            val handler = Handler()
+            timer = Timer(false)
+            val timerTask = object : TimerTask() {
+                override fun run() {
+                    handler.post {
+                        updateTime()
+                    }
+                }
+            }
+            timer.schedule(timerTask, 1, 1)
+        }
+    }
+
+    private fun updateTime() {
+        setTimeText(time + 1)
     }
 
     private fun updateScreen() {
+        timer.cancel()
         val span = when(cardNumber) {
             12 -> 3
             else -> 4
@@ -73,8 +98,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } catch (e: Exception) {}
         recyclerView.addItemDecoration(GridSpacingItemDecoration(span, spacing, true))
         tvNickname.text = nickname
-        actionCount = 0
+        setActionCountText(0)
+        setTimeText(0)
+    }
+
+    private fun setActionCountText(actionCount: Int) {
+        this.actionCount = actionCount
         tvActionsCount.text = "actions: " + actionCount.toString()
+    }
+
+    private fun setTimeText(time: Long) {
+        this.time = time
+        val date = Date(time)
+        val format = SimpleDateFormat("mm:ss.SS")
+        tvTime.text = format.format(date)
     }
 
     private fun loadSettings() {
