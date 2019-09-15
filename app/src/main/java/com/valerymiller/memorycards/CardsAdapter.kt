@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.card.view.*
 
-class CardsAdapter(val context: Context, val size: Int)
+class CardsAdapter(val context: Context, val items: List<Card>)
     : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
 
     private val openCards = mutableListOf<CardViewHolder>()
@@ -38,11 +38,12 @@ class CardsAdapter(val context: Context, val size: Int)
     }
 
     override fun getItemCount(): Int {
-        return size
+        return items.size
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.cardId = if (position % 2 == 0) 1 else 2 // change to true id
+        holder.cardId = items[position].id
+        holder.tvNumber.text = holder.cardId.toString()
         holder.flipAnimation.setTarget(holder.cardContainer)
         holder.halfFlipAnimation.setTarget(holder.cardContainer)
         holder.cardContainer.setOnClickListener {
@@ -61,6 +62,7 @@ class CardsAdapter(val context: Context, val size: Int)
 
         val cardContainer = itemView.cardContainer
         val imageView = itemView.imageView
+        val tvNumber = itemView.tvNumber
         var open = false
         var cardId = -1
 
@@ -73,6 +75,7 @@ class CardsAdapter(val context: Context, val size: Int)
                         if (open) R.drawable.ic_launcher_background_back
                         else R.drawable.ic_launcher_background
                     )
+                    tvNumber.visibility = if (open) View.VISIBLE else View.GONE
                 }
             })
             if (open) this@CardsAdapter.onCardOpen(this@CardViewHolder)

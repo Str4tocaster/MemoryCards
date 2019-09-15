@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             else -> 8
         }
         recyclerView.layoutManager = GridLayoutManager(this, span)
-        recyclerView.adapter = CardsAdapter(this, cardNumber)
+        recyclerView.adapter = CardsAdapter(this, generateCards(cardNumber))
         try {
             recyclerView.removeItemDecorationAt(0)
         } catch (e: Exception) {}
@@ -72,6 +73,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             SettingsBottomSheetFragment.constants.NICKNAME, defaultNickname)?:defaultNickname
         cardNumber = sharedPreferences?.getInt(
             SettingsBottomSheetFragment.constants.CARD_NUMBER, minCardNumber)?:minCardNumber
+    }
+
+    fun generateCards(size: Int) : List<Card> {
+        val items = mutableListOf<Card>()
+        for (i in 1..size/2) {
+            items.add(Card(i))
+            items.add(Card(i))
+        }
+        val result = mutableListOf<Card>()
+        for (i in 1..size) {
+            val j = Random.nextInt(0, items.size)
+            result.add(items[j])
+            items.removeAt(j)
+        }
+        return result
     }
 
 }

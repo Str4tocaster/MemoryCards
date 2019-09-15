@@ -23,6 +23,17 @@
             android:scaleType="centerCrop"
             />
 
+        <TextView
+            android:id="@+id/tvNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="50sp"
+            android:textColor="#fff"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+
     </androidx.cardview.widget.CardView>
 
 </com.valerymiller.memorycards.SquareFrameLayout>
