@@ -88,7 +88,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     fun onWin() {
         timer.cancel()
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.container, WinFragment(), "results")
+        val fragment = WinFragment()
+        val bundle = Bundle()
+        bundle.putString(WinFragment.constants.NICKNAME, nickname)
+        bundle.putLong(WinFragment.constants.TIME, time)
+        bundle.putInt(WinFragment.constants.ACTION_COUNT, actionCount)
+        bundle.putInt(WinFragment.constants.SCORE, getScore())
+        fragment.arguments = bundle
+        transaction.add(R.id.container, fragment, "results")
         transaction.commit()
     }
 
@@ -152,6 +159,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             items.removeAt(j)
         }
         return result
+    }
+
+    private fun getScore(): Int {
+        TODO("Implement this feature")
+        return 9999
     }
 
 }
