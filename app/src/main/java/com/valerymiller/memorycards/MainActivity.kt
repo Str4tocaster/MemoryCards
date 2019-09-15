@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getScore(): Int {
-        TODO("Implement this feature")
+        // TODO("Implement this feature")
         return 9999
     }
 
