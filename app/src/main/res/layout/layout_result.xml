@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6000000"
+    android:focusable="true"
+    android:clickable="true"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        >
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Excelent!"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:textSize="50sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time:"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:gravity="left"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:10:47"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:gravity="right"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Actions:"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:gravity="left"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/tvActionsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:gravity="right"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Score:"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:gravity="left"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/tvScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2398"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:gravity="right"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:layout_gravity="center"
+            android:layout_marginTop="48dp"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -75,9 +75,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    fun onNext() {
+        updateScreen()
+        val transaction = supportFragmentManager.beginTransaction()
+        val fragment = supportFragmentManager.findFragmentByTag("results")
+        if (fragment != null) {
+            transaction.remove(fragment)
+            transaction.commit()
+        }
+    }
+
     fun onWin() {
         timer.cancel()
-        Toast.makeText(this, "Congratulations!", Toast.LENGTH_LONG).show()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.container, WinFragment(), "results")
+        transaction.commit()
     }
 
     private fun updateTime() {
