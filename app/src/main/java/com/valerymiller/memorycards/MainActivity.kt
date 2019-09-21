@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val bundle = Bundle()
         bundle.putString(WinFragment.constants.NICKNAME, nickname)
         bundle.putInt(WinFragment.constants.ACTION_COUNT, actionCount)
-        bundle.putInt(WinFragment.constants.SCORE, getScore())
+        bundle.putInt(WinFragment.constants.SCORE, getScore(cardNumber, actionCount))
         fragment.arguments = bundle
         transaction.add(R.id.container, fragment, "results")
         transaction.commit()
@@ -190,9 +190,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    private fun getScore(): Int {
-        // TODO("Implement this feature")
-        return 9999
+    private fun getScore(cardNumber: Int, actionCount: Int): Int {
+        return cardNumber * actionCount
     }
 
 }
