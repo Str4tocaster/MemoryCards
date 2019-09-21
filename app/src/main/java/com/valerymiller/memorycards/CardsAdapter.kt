@@ -49,7 +49,7 @@ class CardsAdapter(val context: Context, val items: List<Card>)
         holder.flipAnimation.setTarget(holder.cardContainer)
         holder.halfFlipAnimation.setTarget(holder.cardContainer)
         holder.cardContainer.setOnClickListener {
-            if (holder.open) return@setOnClickListener
+            if (holder.open || openCards.size > 1) return@setOnClickListener
             else holder.flipCard()
         }
     }
