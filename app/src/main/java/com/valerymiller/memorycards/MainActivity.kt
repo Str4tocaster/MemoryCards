@@ -18,8 +18,6 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -29,10 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var cardNumber = minCardNumber
     var nickname = defaultNickname
     var actionCount = 0
-    var time: Long = 0
     var images: List<Bitmap> = listOf()
-
-    var timer = Timer(false)
 
     private val updateHandler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -79,18 +74,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun onGameStarted() {
-        if (time == 0L) {
-            val handler = Handler()
-            timer = Timer(false)
-            val timerTask = object : TimerTask() {
-                override fun run() {
-                    handler.post {
-                        updateTime()
-                    }
-                }
-            }
-            timer.schedule(timerTask, 1, 1)
-        }
+
     }
 
     fun onNext() {
@@ -104,21 +88,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun onWin() {
-        timer.cancel()
         val transaction = supportFragmentManager.beginTransaction()
         val fragment = WinFragment()
         val bundle = Bundle()
         bundle.putString(WinFragment.constants.NICKNAME, nickname)
-        bundle.putLong(WinFragment.constants.TIME, time)
         bundle.putInt(WinFragment.constants.ACTION_COUNT, actionCount)
         bundle.putInt(WinFragment.constants.SCORE, getScore())
         fragment.arguments = bundle
         transaction.add(R.id.container, fragment, "results")
         transaction.commit()
-    }
-
-    private fun updateTime() {
-        setTimeText(time + 1)
     }
 
     private fun updateScreen() {
@@ -132,7 +110,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun endUpdateScreen(images: List<Bitmap>) {
-        timer.cancel()
         val span = when(cardNumber) {
             12 -> 3
             else -> 4
@@ -151,7 +128,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.addItemDecoration(GridSpacingItemDecoration(span, spacing, true))
         tvNickname.text = nickname
         setActionCountText(0)
-        setTimeText(0)
 
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
@@ -160,13 +136,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun setActionCountText(actionCount: Int) {
         this.actionCount = actionCount
         tvActionsCount.text = "actions: " + actionCount.toString()
-    }
-
-    private fun setTimeText(time: Long) {
-        this.time = time
-        val date = Date(time)
-        val format = SimpleDateFormat("mm:ss.SS")
-        tvTime.text = format.format(date)
     }
 
     private fun loadSettings() {

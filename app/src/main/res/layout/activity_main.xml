@@ -75,16 +75,6 @@
                 android:text="actions: 32"
                 android:textSize="20sp"
                 android:layout_weight="1"
-                android:gravity="center"
-                />
-
-            <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="01:23:02"
-                android:textSize="20sp"
-                android:layout_weight="1"
                 android:gravity="right"
                 />
 
