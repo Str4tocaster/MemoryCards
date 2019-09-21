@@ -5,7 +5,7 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Message
 import android.view.LayoutInflater
@@ -46,7 +46,6 @@ class CardsAdapter(val context: Context, val items: List<Card>)
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         holder.cardId = items[position].id
         holder.image = items[position].image
-        holder.tvNumber.text = holder.cardId.toString()
         holder.flipAnimation.setTarget(holder.cardContainer)
         holder.halfFlipAnimation.setTarget(holder.cardContainer)
         holder.cardContainer.setOnClickListener {
@@ -65,19 +64,17 @@ class CardsAdapter(val context: Context, val items: List<Card>)
 
         val cardContainer = itemView.cardContainer
         val imageView = itemView.imageView
-        val tvNumber = itemView.tvNumber
         var open = false
         var cardId = -1
-        var image: Drawable? = null
+        var image: Bitmap? = null
 
         fun flipCard() {
             open = !open
             halfFlipAnimation.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    if (open) imageView.setImageDrawable(image)
+                    if (open) imageView.setImageBitmap(image)
                     else imageView.setImageResource(R.drawable.ic_launcher_background)
-                    //tvNumber.visibility = if (open) View.VISIBLE else View.GONE
                 }
             })
             if (open) this@CardsAdapter.onCardOpen(this@CardViewHolder)

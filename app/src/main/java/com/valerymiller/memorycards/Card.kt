@@ -1,8 +1,8 @@
 package com.valerymiller.memorycards
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 
 data class Card(
     val id: Int,
-    val image: Drawable
+    val image: Bitmap
 )
