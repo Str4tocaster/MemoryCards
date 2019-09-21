@@ -19,7 +19,7 @@
             android:id="@+id/imageView"
             android:layout_width="110dp"
             android:layout_height="110dp"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/card_back_1"
             android:scaleType="centerCrop"
             />
 

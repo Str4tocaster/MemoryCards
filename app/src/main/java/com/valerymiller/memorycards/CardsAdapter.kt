@@ -13,12 +13,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.card.view.*
+import kotlin.random.Random
 
 class CardsAdapter(val context: Context, val items: List<Card>)
     : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
 
     private val openCards = mutableListOf<CardViewHolder>()
     private var hidedCards = 0
+    private val cardBack = when (Random.nextInt(0, 6)) {
+        0 -> context.getDrawable(R.drawable.card_back_1)
+        1 -> context.getDrawable(R.drawable.card_back_2)
+        2 -> context.getDrawable(R.drawable.card_back_3)
+        3 -> context.getDrawable(R.drawable.card_back_4)
+        4 -> context.getDrawable(R.drawable.card_back_5)
+        else -> context.getDrawable(R.drawable.card_back_6)
+    }
 
     private val closeHandler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -52,6 +61,7 @@ class CardsAdapter(val context: Context, val items: List<Card>)
             if (holder.open || openCards.size > 1) return@setOnClickListener
             else holder.flipCard()
         }
+        holder.imageView.setImageDrawable(cardBack)
     }
 
     inner class CardViewHolder(context: Context, itemView: View)
@@ -74,7 +84,7 @@ class CardsAdapter(val context: Context, val items: List<Card>)
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     if (open) imageView.setImageBitmap(image)
-                    else imageView.setImageResource(R.drawable.ic_launcher_background)
+                    else imageView.setImageDrawable(cardBack)
                 }
             })
             if (open) this@CardsAdapter.onCardOpen(this@CardViewHolder)
