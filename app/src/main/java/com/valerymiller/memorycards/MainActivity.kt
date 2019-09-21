@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setActionCountText(actionCount: Int) {
         this.actionCount = actionCount
-        tvActionsCount.text = "actions: " + actionCount.toString()
+        tvActionsCount.text = actionCount.toString()
     }
 
     private fun loadSettings() {

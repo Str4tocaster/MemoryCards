@@ -8,106 +8,118 @@
     >
 
     <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+        <ImageView
+            android:id="@+id/btnSettings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_settings"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/btnTop"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_trophy"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/btnRestart"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_restart"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/gameField"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_below="@id/buttonsLayout"
+        android:layout_above="@id/playerInfo"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:overScrollMode="never"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/playerInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         android:padding="16dp"
         >
 
-        <LinearLayout
-            android:id="@+id/buttonsLayout"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ivPlayer"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_player"
+            />
+
+        <TextView
+            android:id="@+id/tvNickname"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            >
+            tools:text="@string/default_nickname"
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/ivPlayer"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="2dp"
+            android:gravity="left"
+            />
 
-            <ImageView
-                android:id="@+id/btnSettings"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_settings"
-                android:layout_weight="1"
-                />
+        <ImageView
+            android:id="@+id/ivCards"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_cards"
+            android:layout_alignParentRight="true"
+            />
 
-            <ImageView
-                android:id="@+id/btnTop"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="8dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_trophy"
-                android:layout_weight="1"
-                />
-
-            <ImageView
-                android:id="@+id/btnRestart"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="8dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_restart"
-                android:layout_weight="1"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvActionsCount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="20dp"
-            >
+            tools:text="32"
+            android:textSize="20sp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_toLeftOf="@id/ivCards"
+            />
 
-            <TextView
-                android:id="@+id/tvNickname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/default_nickname"
-                android:textSize="20sp"
-                android:layout_weight="1"
-                android:gravity="left"
-                />
-
-            <TextView
-                android:id="@+id/tvActionsCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="actions: 32"
-                android:textSize="20sp"
-                android:layout_weight="1"
-                android:gravity="right"
-                />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:overScrollMode="never"
-                />
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/container"
