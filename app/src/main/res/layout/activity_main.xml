@@ -20,29 +20,33 @@
             android:layout_height="wrap_content"
             >
 
-            <Button
+            <ImageView
                 android:id="@+id/btnSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_settings"
                 android:layout_weight="1"
                 />
 
-            <Button
+            <ImageView
                 android:id="@+id/btnTop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Top"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_trophy"
                 android:layout_weight="1"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
                 />
 
-            <Button
+            <ImageView
                 android:id="@+id/btnRestart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Restart"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_restart"
                 android:layout_weight="1"
                 />
 
