@@ -1,11 +1,8 @@
 package com.valerymiller.memorycards
 
-import android.animation.Animator
 import android.animation.AnimatorInflater
-import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Message
 import android.view.LayoutInflater
@@ -54,42 +51,49 @@ class CardsAdapter(val context: Context, val items: List<Card>)
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         holder.cardId = items[position].id
-        holder.image = items[position].image
-        holder.flipAnimation.setTarget(holder.cardContainer)
-        holder.halfFlipAnimation.setTarget(holder.cardContainer)
         holder.cardContainer.setOnClickListener {
             if (holder.open || openCards.size > 1) return@setOnClickListener
             else holder.flipCard()
         }
+        holder.imageViewBack.setImageBitmap(items[position].image)
         holder.imageView.setImageDrawable(cardBack)
     }
 
     inner class CardViewHolder(context: Context, itemView: View)
         : RecyclerView.ViewHolder(itemView) {
 
-        val flipAnimation = AnimatorInflater.loadAnimator(context,
-            R.animator.card_flip) as AnimatorSet
-        val halfFlipAnimation = AnimatorInflater.loadAnimator(context,
-            R.animator.card_flip_half) as AnimatorSet
+        val animationIn = AnimatorInflater.loadAnimator(context, R.animator.animation_in) as AnimatorSet
+        val animationOut = AnimatorInflater.loadAnimator(context, R.animator.animation_out) as AnimatorSet
+        val cardFrontLayout = itemView.card_front
+        val cardBackLayout = itemView.card_back
 
         val cardContainer = itemView.cardContainer
         val imageView = itemView.imageView
+        val imageViewBack = itemView.imageViewBack
         var open = false
         var cardId = -1
-        var image: Bitmap? = null
+
+        init {
+            val distance = 8000
+            val scale = context.resources.displayMetrics.density * distance
+            cardFrontLayout.setCameraDistance(scale)
+            cardBackLayout.setCameraDistance(scale)
+        }
 
         fun flipCard() {
+            if (!open) {
+                animationOut.setTarget(cardFrontLayout)
+                animationIn.setTarget(cardBackLayout)
+                animationOut.start()
+                animationIn.start()
+            } else {
+                animationOut.setTarget(cardBackLayout)
+                animationIn.setTarget(cardFrontLayout)
+                animationOut.start()
+                animationIn.start()
+            }
             open = !open
-            halfFlipAnimation.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    if (open) imageView.setImageBitmap(image)
-                    else imageView.setImageDrawable(cardBack)
-                }
-            })
             if (open) this@CardsAdapter.onCardOpen(this@CardViewHolder)
-            flipAnimation.start()
-            halfFlipAnimation.start()
         }
 
         fun hideCard() {
