@@ -17,6 +17,7 @@ import kotlin.random.Random
 
 interface MainView {
     fun updateScreen(cards: List<Card>, nickname: String)
+    fun setActionCountText(actionCount: String)
     fun showProgress(show: Boolean)
     fun getPreferences(): SharedPreferences?
 }
@@ -30,6 +31,7 @@ class MainPresenter(
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             view.updateScreen(generateCards(images), nickname)
+            view.setActionCountText("0")
             view.showProgress(false)
         }
     }
@@ -37,6 +39,12 @@ class MainPresenter(
     private var nickname = context.resources.getString(R.string.default_nickname)
     private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
     private var images: List<Bitmap> = listOf()
+    private var actionCount = 0
+
+    fun onCardFlipped() {
+        actionCount++
+        view.setActionCountText(actionCount.toString())
+    }
 
     fun updateGameField() {
         view.showProgress(true)
@@ -56,6 +64,8 @@ class MainPresenter(
     fun getCardNumber(): Int = cardNumber
 
     fun getNickname(): String = nickname
+
+    fun getActionCount(): Int = actionCount
 
     private fun requestImage(images: MutableList<Bitmap>) {
         if (images.size >= cardNumber/2) {

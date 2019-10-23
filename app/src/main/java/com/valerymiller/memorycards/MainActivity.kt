@@ -12,8 +12,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
-    var actionCount = 0
-
     lateinit var presenter: MainPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +43,10 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     override fun updateScreen(cards: List<Card>, nickname: String) {
         recyclerView.setCards(cards)
         tvNickname.text = nickname
-        setActionCountText(0)
+    }
+
+    override fun setActionCountText(actionCount: String) {
+        tvActionsCount.text = actionCount
     }
 
     override fun showProgress(show: Boolean) {
@@ -65,8 +66,8 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         presenter.updateGameField()
     }
 
-    fun onActionCounterIncreased() {
-        setActionCountText(actionCount + 1)
+    fun onCardFlipped() {
+        presenter.onCardFlipped()
     }
 
     fun onGameStarted() {
@@ -88,16 +89,11 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         val fragment = WinFragment()
         val bundle = Bundle()
         bundle.putString(WinFragment.constants.NICKNAME, presenter.getNickname())
-        bundle.putInt(WinFragment.constants.ACTION_COUNT, actionCount)
-        bundle.putInt(WinFragment.constants.SCORE, getScore(presenter.getCardNumber(), actionCount))
+        bundle.putInt(WinFragment.constants.ACTION_COUNT, presenter.getActionCount())
+        bundle.putInt(WinFragment.constants.SCORE, getScore(presenter.getCardNumber(), presenter.getActionCount()))
         fragment.arguments = bundle
         transaction.add(R.id.container, fragment, "results")
         transaction.commit()
-    }
-
-    private fun setActionCountText(actionCount: Int) {
-        this.actionCount = actionCount
-        tvActionsCount.text = actionCount.toString()
     }
 
     private fun getScore(cardNumber: Int, actionCount: Int): Int {
