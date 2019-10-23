@@ -1,7 +1,6 @@
 package com.valerymiller.memorycards
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -15,19 +14,19 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.random.Random
 
-interface MainView {
-    fun updateScreen(cards: List<Card>, nickname: String)
-    fun setActionCountText(actionCount: String)
-    fun showProgress(show: Boolean)
-    fun showWinFragment(results: Results)
-    fun closeWinFragment()
-    fun getPreferences(): SharedPreferences?
+interface MainPresenter {
+    fun onCreateGame()
+    fun onRestartGame()
+    fun onWinGame()
+    fun onNextGame()
+    fun onSettingsClosed()
+    fun onCardFlipped()
 }
 
-class MainPresenter(
+class MainPresenterImpl (
     private val context: Context,
     private val view: MainView
-) {
+) : MainPresenter {
 
     private val handler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -43,23 +42,36 @@ class MainPresenter(
     private var images: List<Bitmap> = listOf()
     private var actionCount = 0
 
-    fun refresh() {
-        loadSettings()
-        updateGameField()
+    override fun onCreateGame() {
+        refresh()
     }
 
-    fun onCardFlipped() {
+    override fun onRestartGame() {
+        refresh()
+    }
+
+    override fun onWinGame() {
+        view.showWinFragment(Results(nickname, actionCount, calculateScores(cardNumber, actionCount)))
+    }
+
+    override fun onNextGame() {
+        refresh()
+        view.closeWinFragment()
+    }
+
+    override fun onSettingsClosed() {
+        // todo() if settings changed
+        refresh()
+    }
+
+    override fun onCardFlipped() {
         actionCount++
         view.setActionCountText(actionCount.toString())
     }
 
-    fun onWin() {
-        view.showWinFragment(Results(nickname, actionCount, calculateScores(cardNumber, actionCount)))
-    }
-
-    fun onNextGame() {
-        refresh()
-        view.closeWinFragment()
+    private fun refresh() {
+        loadSettings()
+        updateGameField()
     }
 
     private fun updateGameField() {

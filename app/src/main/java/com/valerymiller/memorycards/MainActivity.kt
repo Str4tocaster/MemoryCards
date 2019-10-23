@@ -10,6 +10,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 
+interface MainView {
+    fun updateScreen(cards: List<Card>, nickname: String)
+    fun setActionCountText(actionCount: String)
+    fun showProgress(show: Boolean)
+    fun showWinFragment(results: Results)
+    fun closeWinFragment()
+    fun getPreferences(): SharedPreferences?
+}
+
 class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
     lateinit var presenter: MainPresenter
@@ -21,15 +30,15 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         btnTop.setOnClickListener(this)
         btnRestart.setOnClickListener(this)
 
-        presenter = MainPresenter(this, this)
-        presenter.refresh()
+        presenter = MainPresenterImpl(this, this)
+        presenter.onCreateGame()
     }
 
     override fun onClick(view: View?) {
         when(view) {
             btnSettings -> SettingsBottomSheetFragment().show(supportFragmentManager, "settings")
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
-            btnRestart -> presenter.refresh()
+            btnRestart -> presenter.onRestartGame()
         }
     }
 
@@ -63,7 +72,7 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
     fun onSettingsClosed() {
-        presenter.refresh()
+        presenter.onSettingsClosed()
     }
 
     fun onCardFlipped() {
@@ -75,7 +84,7 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     }
 
     fun onWin() {
-        presenter.onWin()
+        presenter.onWinGame()
     }
 
     private fun RecyclerView.setCards(cards: List<Card>) {
