@@ -15,7 +15,8 @@ import retrofit2.Response
 import kotlin.random.Random
 
 interface MainView {
-    fun endUpdateScreen(cards: List<Card>)
+    fun updateScreen(cards: List<Card>)
+    fun showProgress(show: Boolean)
 }
 
 class MainPresenter(
@@ -26,14 +27,23 @@ class MainPresenter(
     private val handler = object : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            view.endUpdateScreen(generateCards(images))
+            view.updateScreen(generateCards(images))
+            view.showProgress(false)
         }
     }
 
     private var cardNumber = 12
     private var images: List<Bitmap> = listOf()
 
-    fun requestImage(images: MutableList<Bitmap>) {
+    fun updateGameField() {
+        view.showProgress(true)
+        Thread(Runnable {
+            val drawables = mutableListOf<Bitmap>()
+            requestImage(drawables)
+        }).start()
+    }
+
+    private fun requestImage(images: MutableList<Bitmap>) {
         if (images.size >= cardNumber/2) {
             this.images = images
             handler.sendEmptyMessage(1)

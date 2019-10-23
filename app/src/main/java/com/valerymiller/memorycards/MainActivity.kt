@@ -1,7 +1,6 @@
 package com.valerymiller.memorycards
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
         presenter = MainPresenter(this, this)
         loadSettings()
-        updateScreen()
+        presenter.updateGameField()
     }
 
     override fun onClick(view: View?) {
@@ -43,14 +42,30 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
             btnRestart -> {
-                updateScreen()
+                presenter.updateGameField()
             }
+        }
+    }
+
+    override fun updateScreen(cards: List<Card>) {
+        recyclerView.setCards(cards)
+        tvNickname.text = nickname
+        setActionCountText(0)
+    }
+
+    override fun showProgress(show: Boolean) {
+        if (show) {
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            progressBar.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
     }
 
     fun onSettingsClosed() {
         loadSettings()
-        updateScreen()
+        presenter.updateGameField()
     }
 
     fun onActionCounterIncreased() {
@@ -62,7 +77,7 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     }
 
     fun onNext() {
-        updateScreen()
+        presenter.updateGameField()
         val transaction = supportFragmentManager.beginTransaction()
         val fragment = supportFragmentManager.findFragmentByTag("results")
         if (fragment != null) {
@@ -81,24 +96,6 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         fragment.arguments = bundle
         transaction.add(R.id.container, fragment, "results")
         transaction.commit()
-    }
-
-    private fun updateScreen() {
-        progressBar.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
-
-        Thread(Runnable {
-            val drawables = mutableListOf<Bitmap>()
-            presenter.requestImage(drawables)
-        }).start()
-    }
-
-    override fun endUpdateScreen(cards: List<Card>) {
-        recyclerView.setCards(cards)
-        tvNickname.text = nickname
-        setActionCountText(0)
-        progressBar.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
     }
 
     private fun setActionCountText(actionCount: Int) {
