@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
@@ -93,26 +93,10 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         }).start()
     }
 
-    override fun endUpdateScreen(images: List<Bitmap>, cardNumber: Int) {
-        val span = when(cardNumber) {
-            12 -> 3
-            else -> 4
-        }
-        val spacing = when(cardNumber) {
-            12 -> 20
-            16 -> 16
-            20 -> 12
-            else -> 8
-        }
-        recyclerView.layoutManager = GridLayoutManager(this, span)
-        recyclerView.adapter = CardsAdapter(this, generateCards(images))
-        try {
-            recyclerView.removeItemDecorationAt(0)
-        } catch (e: Exception) {}
-        recyclerView.addItemDecoration(GridSpacingItemDecoration(span, spacing, true))
+    override fun endUpdateScreen(cards: List<Card>) {
+        recyclerView.setCards(cards)
         tvNickname.text = nickname
         setActionCountText(0)
-
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
     }
@@ -130,24 +114,36 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
             SettingsBottomSheetFragment.constants.CARD_NUMBER, minCardNumber)?:minCardNumber)
     }
 
-    fun generateCards(images: List<Bitmap>) : List<Card> {
-        val size = images.size*2
-        val items = mutableListOf<Card>()
-        for (i in 1..size/2) {
-            items.add(Card(i, images[i - 1]))
-            items.add(Card(i, images[i - 1]))
-        }
-        val result = mutableListOf<Card>()
-        for (i in 1..size) {
-            val j = Random.nextInt(0, items.size)
-            result.add(items[j])
-            items.removeAt(j)
-        }
-        return result
-    }
-
     private fun getScore(cardNumber: Int, actionCount: Int): Int {
         return cardNumber * actionCount
     }
 
+    private fun RecyclerView.setCards(cards: List<Card>) {
+        layoutManager = GridLayoutManager(this@MainActivity, determineSpan(cards.size))
+        adapter = CardsAdapter(this@MainActivity, cards)
+        if (itemDecorationCount > 0) {
+            removeItemDecorationAt(0)
+        }
+        addItemDecoration(
+            GridSpacingItemDecoration(
+                determineSpan(cards.size),
+                determineSpacing(cards.size),
+                true
+            )
+        )
+    }
+
+    private fun determineSpan(cardNumber: Int) =
+        when(cardNumber) {
+            12 -> 3
+            else -> 4
+        }
+
+    private fun determineSpacing(cardNumber: Int) =
+        when(cardNumber) {
+            12 -> 20
+            16 -> 16
+            20 -> 12
+            else -> 8
+        }
 }

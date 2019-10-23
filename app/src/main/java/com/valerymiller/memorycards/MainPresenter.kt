@@ -12,9 +12,10 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.random.Random
 
 interface MainView {
-    fun endUpdateScreen(images: List<Bitmap>, cardNumber: Int)
+    fun endUpdateScreen(cards: List<Card>)
 }
 
 class MainPresenter(
@@ -25,7 +26,7 @@ class MainPresenter(
     private val handler = object : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            view.endUpdateScreen(images, cardNumber)
+            view.endUpdateScreen(generateCards(images))
         }
     }
 
@@ -65,5 +66,21 @@ class MainPresenter(
     }
 
     fun getCardNumber(): Int = cardNumber
+
+    private fun generateCards(images: List<Bitmap>) : List<Card> {
+        val size = images.size*2
+        val items = mutableListOf<Card>()
+        for (i in 1..size/2) {
+            items.add(Card(i, images[i - 1]))
+            items.add(Card(i, images[i - 1]))
+        }
+        val result = mutableListOf<Card>()
+        for (i in 1..size) {
+            val j = Random.nextInt(0, items.size)
+            result.add(items[j])
+            items.removeAt(j)
+        }
+        return result
+    }
 
 }
