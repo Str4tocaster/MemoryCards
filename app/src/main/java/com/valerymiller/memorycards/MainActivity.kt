@@ -2,39 +2,22 @@ package com.valerymiller.memorycards
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
     var minCardNumber = 12
     var defaultNickname = "Player"
-    var cardNumber = minCardNumber
     var nickname = defaultNickname
     var actionCount = 0
-    var images: List<Bitmap> = listOf()
 
-    private val updateHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            endUpdateScreen(images)
-        }
-    }
+    lateinit var presenter: MainPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +30,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnTop.setOnClickListener(this)
         btnRestart.setOnClickListener(this)
 
+        presenter = MainPresenter(this, this)
         loadSettings()
         updateScreen()
     }
@@ -93,7 +77,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val bundle = Bundle()
         bundle.putString(WinFragment.constants.NICKNAME, nickname)
         bundle.putInt(WinFragment.constants.ACTION_COUNT, actionCount)
-        bundle.putInt(WinFragment.constants.SCORE, getScore(cardNumber, actionCount))
+        bundle.putInt(WinFragment.constants.SCORE, getScore(presenter.getCardNumber(), actionCount))
         fragment.arguments = bundle
         transaction.add(R.id.container, fragment, "results")
         transaction.commit()
@@ -105,11 +89,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         Thread(Runnable {
             val drawables = mutableListOf<Bitmap>()
-            requestImage(drawables)
+            presenter.requestImage(drawables)
         }).start()
     }
 
-    private fun endUpdateScreen(images: List<Bitmap>) {
+    override fun endUpdateScreen(images: List<Bitmap>, cardNumber: Int) {
         val span = when(cardNumber) {
             12 -> 3
             else -> 4
@@ -142,8 +126,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         nickname = sharedPreferences?.getString(
             SettingsBottomSheetFragment.constants.NICKNAME, defaultNickname)?:defaultNickname
-        cardNumber = sharedPreferences?.getInt(
-            SettingsBottomSheetFragment.constants.CARD_NUMBER, minCardNumber)?:minCardNumber
+        presenter.setCardNumber(sharedPreferences?.getInt(
+            SettingsBottomSheetFragment.constants.CARD_NUMBER, minCardNumber)?:minCardNumber)
     }
 
     fun generateCards(images: List<Bitmap>) : List<Card> {
@@ -160,34 +144,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             items.removeAt(j)
         }
         return result
-    }
-
-    private fun requestImage(images: MutableList<Bitmap>) {
-        if (images.size >= cardNumber/2) {
-            this.images = images
-            updateHandler.sendEmptyMessage(1)
-            return
-        }
-        val service = LoremPicsum.create()
-        service.randomImage().enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                val url = response.raw().request().url().toString()
-                Glide.with(this@MainActivity)
-                    .asBitmap()
-                    .load(url)
-                    .into(object : CustomTarget<Bitmap>(){
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            images.add(resource)
-                        }
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
-                requestImage(images)
-            }
-        })
     }
 
     private fun getScore(cardNumber: Int, actionCount: Int): Int {
