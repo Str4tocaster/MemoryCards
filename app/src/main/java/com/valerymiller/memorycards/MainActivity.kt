@@ -72,18 +72,22 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
     fun onSettingsClosed() {
+        // todo сделать через интерфейс
         presenter.onSettingsClosed()
     }
 
     fun onCardFlipped() {
+        // todo сделать через интерфейс
         presenter.onCardFlipped()
     }
 
     fun onNext() {
+        // todo сделать через интерфейс
         presenter.onNextGame()
     }
 
     fun onWin() {
+        // todo сделать через интерфейс
         presenter.onWinGame()
     }
 
