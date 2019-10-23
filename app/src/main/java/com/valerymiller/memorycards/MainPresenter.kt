@@ -41,24 +41,14 @@ class MainPresenter(
     private var images: List<Bitmap> = listOf()
     private var actionCount = 0
 
+    fun refresh() {
+        loadSettings()
+        updateGameField()
+    }
+
     fun onCardFlipped() {
         actionCount++
         view.setActionCountText(actionCount.toString())
-    }
-
-    fun updateGameField() {
-        view.showProgress(true)
-        Thread(Runnable {
-            val drawables = mutableListOf<Bitmap>()
-            requestImage(drawables)
-        }).start()
-    }
-
-    fun loadSettings() {
-        view.getPreferences()?.let { preferences ->
-            nickname = preferences.getString(SettingsBottomSheetFragment.constants.NICKNAME, nickname) ?: nickname
-            cardNumber = preferences.getInt(SettingsBottomSheetFragment.constants.CARD_NUMBER, cardNumber)
-        }
     }
 
     fun getCardNumber(): Int = cardNumber
@@ -66,6 +56,21 @@ class MainPresenter(
     fun getNickname(): String = nickname
 
     fun getActionCount(): Int = actionCount
+
+    private fun updateGameField() {
+        view.showProgress(true)
+        Thread(Runnable {
+            val drawables = mutableListOf<Bitmap>()
+            requestImage(drawables)
+        }).start()
+    }
+
+    private fun loadSettings() {
+        view.getPreferences()?.let { preferences ->
+            nickname = preferences.getString(SettingsBottomSheetFragment.constants.NICKNAME, nickname) ?: nickname
+            cardNumber = preferences.getInt(SettingsBottomSheetFragment.constants.CARD_NUMBER, cardNumber)
+        }
+    }
 
     private fun requestImage(images: MutableList<Bitmap>) {
         if (images.size >= cardNumber/2) {

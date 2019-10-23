@@ -17,26 +17,19 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         btnSettings.setOnClickListener(this)
         btnTop.setOnClickListener(this)
         btnRestart.setOnClickListener(this)
 
         presenter = MainPresenter(this, this)
-        presenter.loadSettings()
-        presenter.updateGameField()
+        presenter.refresh()
     }
 
     override fun onClick(view: View?) {
         when(view) {
-            btnSettings -> {
-                SettingsBottomSheetFragment().show(supportFragmentManager, "settings")
-            }
-
+            btnSettings -> SettingsBottomSheetFragment().show(supportFragmentManager, "settings")
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
-            btnRestart -> {
-                presenter.updateGameField()
-            }
+            btnRestart -> presenter.refresh()
         }
     }
 
@@ -62,20 +55,15 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
     fun onSettingsClosed() {
-        presenter.loadSettings()
-        presenter.updateGameField()
+        presenter.refresh()
     }
 
     fun onCardFlipped() {
         presenter.onCardFlipped()
     }
 
-    fun onGameStarted() {
-
-    }
-
     fun onNext() {
-        presenter.updateGameField()
+        presenter.refresh()
         val transaction = supportFragmentManager.beginTransaction()
         val fragment = supportFragmentManager.findFragmentByTag("results")
         if (fragment != null) {

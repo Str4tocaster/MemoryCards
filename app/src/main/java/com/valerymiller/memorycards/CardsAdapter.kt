@@ -109,8 +109,8 @@ class CardsAdapter(val context: Context, val items: List<Card>)
             else startCloseTimer()
             if (context is MainActivity) context.onCardFlipped()
         }
-        if (openCards.size == 1 && context is MainActivity)
-            context.onGameStarted()
+//        if (openCards.size == 1 && context is MainActivity)
+//            context.onGameStarted()
     }
 
     private fun startCloseTimer() {
