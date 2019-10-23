@@ -1,6 +1,7 @@
 package com.valerymiller.memorycards
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -15,8 +16,9 @@ import retrofit2.Response
 import kotlin.random.Random
 
 interface MainView {
-    fun updateScreen(cards: List<Card>)
+    fun updateScreen(cards: List<Card>, nickname: String)
     fun showProgress(show: Boolean)
+    fun getPreferences(): SharedPreferences?
 }
 
 class MainPresenter(
@@ -27,12 +29,13 @@ class MainPresenter(
     private val handler = object : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            view.updateScreen(generateCards(images))
+            view.updateScreen(generateCards(images), nickname)
             view.showProgress(false)
         }
     }
 
-    private var cardNumber = 12
+    private var nickname = context.resources.getString(R.string.default_nickname)
+    private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
     private var images: List<Bitmap> = listOf()
 
     fun updateGameField() {
@@ -42,6 +45,17 @@ class MainPresenter(
             requestImage(drawables)
         }).start()
     }
+
+    fun loadSettings() {
+        view.getPreferences()?.let { preferences ->
+            nickname = preferences.getString(SettingsBottomSheetFragment.constants.NICKNAME, nickname) ?: nickname
+            cardNumber = preferences.getInt(SettingsBottomSheetFragment.constants.CARD_NUMBER, cardNumber)
+        }
+    }
+
+    fun getCardNumber(): Int = cardNumber
+
+    fun getNickname(): String = nickname
 
     private fun requestImage(images: MutableList<Bitmap>) {
         if (images.size >= cardNumber/2) {
@@ -71,12 +85,6 @@ class MainPresenter(
         })
     }
 
-    fun setCardNumber(cardNumber: Int) {
-        this.cardNumber = cardNumber
-    }
-
-    fun getCardNumber(): Int = cardNumber
-
     private fun generateCards(images: List<Bitmap>) : List<Card> {
         val size = images.size*2
         val items = mutableListOf<Card>()
@@ -92,5 +100,4 @@ class MainPresenter(
         }
         return result
     }
-
 }

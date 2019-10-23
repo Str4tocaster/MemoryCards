@@ -1,6 +1,7 @@
 package com.valerymiller.memorycards
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -11,9 +12,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
-    var minCardNumber = 12
-    var defaultNickname = "Player"
-    var nickname = defaultNickname
     var actionCount = 0
 
     lateinit var presenter: MainPresenter
@@ -22,15 +20,12 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        minCardNumber = resources.getInteger(R.integer.card_number_min)
-        defaultNickname = resources.getString(R.string.default_nickname)
-
         btnSettings.setOnClickListener(this)
         btnTop.setOnClickListener(this)
         btnRestart.setOnClickListener(this)
 
         presenter = MainPresenter(this, this)
-        loadSettings()
+        presenter.loadSettings()
         presenter.updateGameField()
     }
 
@@ -47,7 +42,7 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         }
     }
 
-    override fun updateScreen(cards: List<Card>) {
+    override fun updateScreen(cards: List<Card>, nickname: String) {
         recyclerView.setCards(cards)
         tvNickname.text = nickname
         setActionCountText(0)
@@ -63,8 +58,10 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         }
     }
 
+    override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
+
     fun onSettingsClosed() {
-        loadSettings()
+        presenter.loadSettings()
         presenter.updateGameField()
     }
 
@@ -90,7 +87,7 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         val transaction = supportFragmentManager.beginTransaction()
         val fragment = WinFragment()
         val bundle = Bundle()
-        bundle.putString(WinFragment.constants.NICKNAME, nickname)
+        bundle.putString(WinFragment.constants.NICKNAME, presenter.getNickname())
         bundle.putInt(WinFragment.constants.ACTION_COUNT, actionCount)
         bundle.putInt(WinFragment.constants.SCORE, getScore(presenter.getCardNumber(), actionCount))
         fragment.arguments = bundle
@@ -101,14 +98,6 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     private fun setActionCountText(actionCount: Int) {
         this.actionCount = actionCount
         tvActionsCount.text = actionCount.toString()
-    }
-
-    private fun loadSettings() {
-        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
-        nickname = sharedPreferences?.getString(
-            SettingsBottomSheetFragment.constants.NICKNAME, defaultNickname)?:defaultNickname
-        presenter.setCardNumber(sharedPreferences?.getInt(
-            SettingsBottomSheetFragment.constants.CARD_NUMBER, minCardNumber)?:minCardNumber)
     }
 
     private fun getScore(cardNumber: Int, actionCount: Int): Int {
