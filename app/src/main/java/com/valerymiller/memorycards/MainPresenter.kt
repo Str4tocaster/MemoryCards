@@ -19,6 +19,8 @@ interface MainView {
     fun updateScreen(cards: List<Card>, nickname: String)
     fun setActionCountText(actionCount: String)
     fun showProgress(show: Boolean)
+    fun showWinFragment(results: Results)
+    fun closeWinFragment()
     fun getPreferences(): SharedPreferences?
 }
 
@@ -51,11 +53,14 @@ class MainPresenter(
         view.setActionCountText(actionCount.toString())
     }
 
-    fun getCardNumber(): Int = cardNumber
+    fun onWin() {
+        view.showWinFragment(Results(nickname, actionCount, calculateScores(cardNumber, actionCount)))
+    }
 
-    fun getNickname(): String = nickname
-
-    fun getActionCount(): Int = actionCount
+    fun onNextGame() {
+        refresh()
+        view.closeWinFragment()
+    }
 
     private fun updateGameField() {
         view.showProgress(true)
@@ -114,5 +119,9 @@ class MainPresenter(
             items.removeAt(j)
         }
         return result
+    }
+
+    private fun calculateScores(cardNumber: Int, actionCount: Int): Int {
+        return cardNumber * actionCount
     }
 }

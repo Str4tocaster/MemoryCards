@@ -52,6 +52,14 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
         }
     }
 
+    override fun showWinFragment(results: Results) {
+        WinFragment.show(supportFragmentManager, results)
+    }
+
+    override fun closeWinFragment() {
+        WinFragment.close(supportFragmentManager)
+    }
+
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
     fun onSettingsClosed() {
@@ -63,29 +71,11 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     }
 
     fun onNext() {
-        presenter.refresh()
-        val transaction = supportFragmentManager.beginTransaction()
-        val fragment = supportFragmentManager.findFragmentByTag("results")
-        if (fragment != null) {
-            transaction.remove(fragment)
-            transaction.commit()
-        }
+        presenter.onNextGame()
     }
 
     fun onWin() {
-        val transaction = supportFragmentManager.beginTransaction()
-        val fragment = WinFragment()
-        val bundle = Bundle()
-        bundle.putString(WinFragment.constants.NICKNAME, presenter.getNickname())
-        bundle.putInt(WinFragment.constants.ACTION_COUNT, presenter.getActionCount())
-        bundle.putInt(WinFragment.constants.SCORE, getScore(presenter.getCardNumber(), presenter.getActionCount()))
-        fragment.arguments = bundle
-        transaction.add(R.id.container, fragment, "results")
-        transaction.commit()
-    }
-
-    private fun getScore(cardNumber: Int, actionCount: Int): Int {
-        return cardNumber * actionCount
+        presenter.onWin()
     }
 
     private fun RecyclerView.setCards(cards: List<Card>) {
