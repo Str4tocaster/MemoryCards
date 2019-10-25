@@ -25,15 +25,13 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
 
     companion object {
         fun show(fragmentManager: FragmentManager, cardNumber: Int, nickname: String) {
-            val transaction = fragmentManager.beginTransaction()
-            val fragment = SettingsBottomSheetFragment().apply {
+            SettingsBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putString(NICKNAME, nickname)
                     putInt(CARD_NUMBER, cardNumber)
                 }
+                show(fragmentManager, FRAGMENT_TAG)
             }
-            transaction.add(R.id.container, fragment, FRAGMENT_TAG)
-            transaction.commit()
         }
     }
 
@@ -56,7 +54,7 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.layout_settings, container, false)
+        val view = inflater.inflate(R.layout.layout_settings, container)
         edtNickname = view.edtNickname
         seekBar = view.seekBar
         seekBar.onSeekChangeListener = object : OnSeekChangeListener {
