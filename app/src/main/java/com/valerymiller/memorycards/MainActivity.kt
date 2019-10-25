@@ -19,7 +19,12 @@ interface MainView {
     fun getPreferences(): SharedPreferences?
 }
 
-class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
+class MainActivity :
+    AppCompatActivity(),
+    MainView,
+    View.OnClickListener,
+    WinFragmentListener
+{
 
     lateinit var presenter: MainPresenter
 
@@ -71,6 +76,10 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
 
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
+    override fun onNext() {
+        presenter.onNextGame()
+    }
+
     fun onSettingsClosed() {
         // todo сделать через интерфейс
         presenter.onSettingsClosed()
@@ -79,11 +88,6 @@ class MainActivity : AppCompatActivity(), MainView, View.OnClickListener {
     fun onCardFlipped() {
         // todo сделать через интерфейс
         presenter.onCardFlipped()
-    }
-
-    fun onNext() {
-        // todo сделать через интерфейс
-        presenter.onNextGame()
     }
 
     fun onWin() {

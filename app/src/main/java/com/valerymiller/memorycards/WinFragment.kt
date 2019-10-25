@@ -1,5 +1,6 @@
 package com.valerymiller.memorycards
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,10 @@ private const val NICKNAME = "nickname"
 private const val ACTION_COUNT = "action_count"
 private const val SCORE = "score"
 private const val FRAGMENT_TAG = "results_tag"
+
+interface WinFragmentListener {
+    fun onNext()
+}
 
 class WinFragment : Fragment() {
 
@@ -38,15 +43,17 @@ class WinFragment : Fragment() {
         }
     }
 
-    var nickname = ""
-    var actionCount = 0
-    var score = 0
+    private lateinit var nickname: String
+    private var actionCount = 0
+    private var score = 0
+
+    private var listener: WinFragmentListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        nickname = arguments?.getString(NICKNAME)?:""
-        actionCount = arguments?.getInt(ACTION_COUNT)?:0
-        score = arguments?.getInt(SCORE)?:0
+        nickname = arguments?.getString(NICKNAME) ?: ""
+        actionCount = arguments?.getInt(ACTION_COUNT) ?: 0
+        score = arguments?.getInt(SCORE) ?: 0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,9 +65,20 @@ class WinFragment : Fragment() {
         view.tvActionsCount.text = actionCount.toString()
 
         view.btnNext.setOnClickListener {
-            if (activity is MainActivity)
-                (activity as MainActivity).onNext()
+            listener?.onNext()
         }
         return view
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        if (activity is WinFragmentListener) {
+            listener = activity
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 }
