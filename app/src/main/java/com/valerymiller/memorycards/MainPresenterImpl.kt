@@ -68,9 +68,12 @@ class MainPresenterImpl (
     }
 
     override fun onSettingsClosed(cardNumber: Int, nickname: String) {
-        // todo() if settings changed
-        saveSettings(cardNumber, nickname)
-        refresh()
+        if (cardNumber != this.cardNumber
+            || (nickname != this.nickname && nickname.trim().isNotEmpty())
+        ) {
+            saveSettings(cardNumber, nickname)
+            refresh()
+        }
     }
 
     override fun onCardFlipped() {
@@ -100,16 +103,16 @@ class MainPresenterImpl (
 
     private fun saveSettings(cardNumber: Int, nickname: String) {
         view.getPreferences()?.let { preferences ->
-            val ed = preferences.edit()
-            if (nickname.trim().isNotEmpty())
-                ed.putString(PREF_NICKNAME, nickname)
-            ed.putInt(PREF_CARD_NUMBER, cardNumber)
-            ed.commit()
+            preferences.edit().apply {
+                putString(PREF_NICKNAME, nickname)
+                putInt(PREF_CARD_NUMBER, cardNumber)
+                commit()
+            }
         }
     }
 
     private fun requestImage(images: MutableList<Bitmap>) {
-        if (images.size >= cardNumber/2) {
+        if (images.size >= cardNumber / 2) {
             this.images = images
             handler.sendEmptyMessage(1)
             return
@@ -125,7 +128,7 @@ class MainPresenterImpl (
                 Glide.with(context)
                     .asBitmap()
                     .load(url)
-                    .into(object : CustomTarget<Bitmap>(){
+                    .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             images.add(resource)
                         }
@@ -136,10 +139,10 @@ class MainPresenterImpl (
         })
     }
 
-    private fun generateCards(images: List<Bitmap>) : List<Card> {
-        val size = images.size*2
+    private fun generateCards(images: List<Bitmap>): List<Card> {
+        val size = images.size * 2
         val items = mutableListOf<Card>()
-        for (i in 1..size/2) {
+        for (i in 1..size / 2) {
             items.add(Card(i, images[i - 1]))
             items.add(Card(i, images[i - 1]))
         }
