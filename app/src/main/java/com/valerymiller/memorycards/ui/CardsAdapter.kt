@@ -1,15 +1,11 @@
 package com.valerymiller.memorycards.ui
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.valerymiller.memorycards.R
 import com.valerymiller.memorycards.model.Card
-import kotlinx.android.synthetic.main.card.view.*
 import kotlin.random.Random
 
 interface CardsAdapterListener {
@@ -20,7 +16,9 @@ class CardsAdapter(
     private val context: Context,
     private val listener: CardsAdapterListener,
     private val items: List<Card>
-) : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
+) : RecyclerView.Adapter<CardViewHolder>(),
+    CardListener
+{
 
     private val openCards = mutableListOf<CardViewHolder>()
 
@@ -35,7 +33,7 @@ class CardsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
-        return CardViewHolder(context, LayoutInflater.from(context)
+        return CardViewHolder(context, this, LayoutInflater.from(context)
             .inflate(R.layout.card, parent, false))
     }
 
@@ -53,6 +51,11 @@ class CardsAdapter(
         holder.imageView.setImageDrawable(cardBack)
     }
 
+    override fun onCardOpen(card: CardViewHolder) {
+        openCards.add(card)
+        listener.onCardFlipped(card.cardId)
+    }
+
     fun closeCards() {
         openCards[0].flipCard()
         openCards[1].flipCard()
@@ -64,57 +67,4 @@ class CardsAdapter(
         openCards[1].hideCard()
         openCards.clear()
     }
-
-    private fun onCardOpen(holder: CardViewHolder) {
-        openCards.add(holder)
-        listener.onCardFlipped(holder.cardId)
-    }
-
-    private fun initAnimationIn(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_in) as AnimatorSet
-
-    private fun initAnimationOut(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_out) as AnimatorSet
-
-    inner class CardViewHolder(context: Context, itemView: View)
-        : RecyclerView.ViewHolder(itemView) {
-
-        val animationIn = initAnimationIn()
-        val animationOut = initAnimationOut()
-        val cardFrontLayout = itemView.card_front
-        val cardBackLayout = itemView.card_back
-        val cardContainer = itemView.cardContainer
-        val imageView = itemView.imageView
-        val imageViewBack = itemView.imageViewBack
-        var open = false
-        var cardId = -1
-
-        init {
-            val distance = 8000
-            val scale = context.resources.displayMetrics.density * distance
-            cardFrontLayout.setCameraDistance(scale)
-            cardBackLayout.setCameraDistance(scale)
-        }
-
-        fun flipCard() {
-            if (!open) {
-                animationOut.setTarget(cardFrontLayout)
-                animationIn.setTarget(cardBackLayout)
-                animationOut.start()
-                animationIn.start()
-            } else {
-                animationOut.setTarget(cardBackLayout)
-                animationIn.setTarget(cardFrontLayout)
-                animationOut.start()
-                animationIn.start()
-            }
-            open = !open
-            if (open) this@CardsAdapter.onCardOpen(this@CardViewHolder)
-        }
-
-        fun hideCard() {
-            cardContainer.visibility = View.GONE
-        }
-    }
-
 }
