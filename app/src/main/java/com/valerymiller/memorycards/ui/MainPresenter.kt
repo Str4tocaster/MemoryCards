@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.ui
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,6 +8,10 @@ import android.os.Message
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.valerymiller.memorycards.R
+import com.valerymiller.memorycards.data.LoremPicsum
+import com.valerymiller.memorycards.model.Card
+import com.valerymiller.memorycards.model.Results
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,7 +59,13 @@ class MainPresenterImpl (
     }
 
     override fun onWinGame() {
-        view.showWinFragment(Results(nickname, actionCount, calculateScores(cardNumber, actionCount)))
+        view.showWinFragment(
+            Results(
+                nickname,
+                actionCount,
+                calculateScores(cardNumber, actionCount)
+            )
+        )
     }
 
     override fun onNextGame() {

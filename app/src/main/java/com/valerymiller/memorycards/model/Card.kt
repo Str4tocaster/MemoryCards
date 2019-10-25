@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.model
 
 import android.graphics.Bitmap
 

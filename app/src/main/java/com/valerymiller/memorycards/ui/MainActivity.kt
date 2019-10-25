@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.ui
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,6 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.valerymiller.memorycards.R
+import com.valerymiller.memorycards.model.Card
+import com.valerymiller.memorycards.model.Results
+import com.valerymiller.memorycards.widget.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 
 interface MainView {
@@ -77,7 +81,11 @@ class MainActivity :
     }
 
     override fun showSettingsFragment(cardNumber: Int, nickname: String) {
-        SettingsBottomSheetFragment.show(supportFragmentManager, cardNumber, nickname)
+        SettingsBottomSheetFragment.show(
+            supportFragmentManager,
+            cardNumber,
+            nickname
+        )
     }
 
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)

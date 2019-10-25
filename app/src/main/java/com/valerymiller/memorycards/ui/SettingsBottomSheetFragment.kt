@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.ui
 
 import android.app.Activity
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.valerymiller.memorycards.R
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
@@ -45,8 +46,12 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        nickname = arguments?.getString(NICKNAME) ?: resources.getString(R.string.default_nickname)
-        cardNumber = arguments?.getInt(CARD_NUMBER) ?: resources.getInteger(R.integer.card_number_min)
+        nickname = arguments?.getString(NICKNAME) ?: resources.getString(
+            R.string.default_nickname
+        )
+        cardNumber = arguments?.getInt(CARD_NUMBER) ?: resources.getInteger(
+            R.integer.card_number_min
+        )
     }
 
     override fun onCreateView(

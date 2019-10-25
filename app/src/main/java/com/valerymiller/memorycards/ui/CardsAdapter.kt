@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.ui
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.valerymiller.memorycards.R
+import com.valerymiller.memorycards.model.Card
 import kotlinx.android.synthetic.main.card.view.*
 import kotlin.random.Random
 
@@ -62,8 +64,12 @@ class CardsAdapter(val context: Context, val items: List<Card>)
     inner class CardViewHolder(context: Context, itemView: View)
         : RecyclerView.ViewHolder(itemView) {
 
-        val animationIn = AnimatorInflater.loadAnimator(context, R.animator.animation_in) as AnimatorSet
-        val animationOut = AnimatorInflater.loadAnimator(context, R.animator.animation_out) as AnimatorSet
+        val animationIn = AnimatorInflater.loadAnimator(context,
+            R.animator.animation_in
+        ) as AnimatorSet
+        val animationOut = AnimatorInflater.loadAnimator(context,
+            R.animator.animation_out
+        ) as AnimatorSet
         val cardFrontLayout = itemView.card_front
         val cardBackLayout = itemView.card_back
 

@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.data
 
 import okhttp3.ResponseBody
 import retrofit2.Call

@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.ui
 
 import android.app.Activity
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.valerymiller.memorycards.R
+import com.valerymiller.memorycards.model.Results
 import kotlinx.android.synthetic.main.layout_result.view.*
 
 private const val NICKNAME = "nickname"
@@ -30,7 +32,10 @@ class WinFragment : Fragment() {
                     putInt(SCORE, results.scores)
                 }
             }
-            transaction.add(R.id.container, fragment, FRAGMENT_TAG)
+            transaction.add(
+                R.id.container, fragment,
+                FRAGMENT_TAG
+            )
             transaction.commit()
         }
 

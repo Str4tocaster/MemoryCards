@@ -1,4 +1,4 @@
-package com.valerymiller.memorycards
+package com.valerymiller.memorycards.widget
 
 import android.graphics.Rect
 import android.view.View
