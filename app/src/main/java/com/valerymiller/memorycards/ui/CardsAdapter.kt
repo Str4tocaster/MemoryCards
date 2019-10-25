@@ -3,8 +3,6 @@ package com.valerymiller.memorycards.ui
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
-import android.os.Handler
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +12,19 @@ import com.valerymiller.memorycards.model.Card
 import kotlinx.android.synthetic.main.card.view.*
 import kotlin.random.Random
 
-class CardsAdapter(val context: Context, val items: List<Card>)
-    : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
+interface CardsAdapterListener {
+    fun onCardFlipped(cardId: Int)
+}
+
+class CardsAdapter(
+    private val context: Context,
+    private val listener: CardsAdapterListener,
+    private val items: List<Card>
+) : RecyclerView.Adapter<CardsAdapter.CardViewHolder>() {
 
     private val openCards = mutableListOf<CardViewHolder>()
-    private var hidedCards = 0
+
+    // todo - передавать в конструкторе из presenter
     private val cardBack = when (Random.nextInt(0, 6)) {
         0 -> context.getDrawable(R.drawable.card_back_1)
         1 -> context.getDrawable(R.drawable.card_back_2)
@@ -26,20 +32,6 @@ class CardsAdapter(val context: Context, val items: List<Card>)
         3 -> context.getDrawable(R.drawable.card_back_4)
         4 -> context.getDrawable(R.drawable.card_back_5)
         else -> context.getDrawable(R.drawable.card_back_6)
-    }
-
-    private val closeHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            closeCards()
-        }
-    }
-
-    private val hideHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            hideCards()
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
@@ -61,18 +53,36 @@ class CardsAdapter(val context: Context, val items: List<Card>)
         holder.imageView.setImageDrawable(cardBack)
     }
 
+    fun closeCards() {
+        openCards[0].flipCard()
+        openCards[1].flipCard()
+        openCards.clear()
+    }
+
+    fun hideCards() {
+        openCards[0].hideCard()
+        openCards[1].hideCard()
+        openCards.clear()
+    }
+
+    private fun onCardOpen(holder: CardViewHolder) {
+        openCards.add(holder)
+        listener.onCardFlipped(holder.cardId)
+    }
+
+    private fun initAnimationIn(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_in) as AnimatorSet
+
+    private fun initAnimationOut(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_out) as AnimatorSet
+
     inner class CardViewHolder(context: Context, itemView: View)
         : RecyclerView.ViewHolder(itemView) {
 
-        val animationIn = AnimatorInflater.loadAnimator(context,
-            R.animator.animation_in
-        ) as AnimatorSet
-        val animationOut = AnimatorInflater.loadAnimator(context,
-            R.animator.animation_out
-        ) as AnimatorSet
+        val animationIn = initAnimationIn()
+        val animationOut = initAnimationOut()
         val cardFrontLayout = itemView.card_front
         val cardBackLayout = itemView.card_back
-
         val cardContainer = itemView.cardContainer
         val imageView = itemView.imageView
         val imageViewBack = itemView.imageViewBack
@@ -105,47 +115,6 @@ class CardsAdapter(val context: Context, val items: List<Card>)
         fun hideCard() {
             cardContainer.visibility = View.GONE
         }
-    }
-
-    fun onCardOpen(holder: CardViewHolder) {
-        openCards.add(holder)
-        if (openCards.size > 1) {
-            if (openCards[0].cardId == openCards[1].cardId)
-                startHideTimer()
-            else startCloseTimer()
-            if (context is MainActivity) context.onCardFlipped()
-        }
-//        if (openCards.size == 1 && context is MainActivity)
-//            context.onGameStarted()
-    }
-
-    private fun startCloseTimer() {
-        Thread(Runnable {
-            Thread.sleep(1000)
-            closeHandler.sendEmptyMessage(1)
-        }).start()
-    }
-
-    private fun startHideTimer() {
-        Thread(Runnable {
-            Thread.sleep(1000)
-            hideHandler.sendEmptyMessage(1)
-        }).start()
-    }
-
-    private fun closeCards() {
-        openCards[0].flipCard()
-        openCards[1].flipCard()
-        openCards.clear()
-    }
-
-    private fun hideCards() {
-        openCards[0].hideCard()
-        openCards[1].hideCard()
-        openCards.clear()
-        hidedCards += 2
-        if (hidedCards == items.size && context is MainActivity)
-            context.onWin()
     }
 
 }

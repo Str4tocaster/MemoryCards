@@ -22,6 +22,8 @@ interface MainView {
     fun closeWinFragment()
     fun showSettingsFragment(cardNumber: Int, nickname: String)
     fun getPreferences(): SharedPreferences?
+    fun closeCards()
+    fun hideCards()
 }
 
 class MainActivity :
@@ -29,10 +31,12 @@ class MainActivity :
     MainView,
     View.OnClickListener,
     WinFragmentListener,
-    SettingsFragmentListener
+    SettingsFragmentListener,
+    CardsAdapterListener
 {
 
     lateinit var presenter: MainPresenter
+    lateinit var adapter: CardsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +94,14 @@ class MainActivity :
 
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
+    override fun closeCards() {
+        adapter.closeCards()
+    }
+
+    override fun hideCards() {
+        adapter.hideCards()
+    }
+
     override fun onNext() {
         presenter.onNextGame()
     }
@@ -98,19 +110,14 @@ class MainActivity :
         presenter.onSettingsClosed(cardNumber, nickname)
     }
 
-    fun onCardFlipped() {
-        // todo сделать через интерфейс
-        presenter.onCardFlipped()
-    }
-
-    fun onWin() {
-        // todo сделать через интерфейс
-        presenter.onWinGame()
+    override fun onCardFlipped(cardId: Int) {
+        presenter.onCardFlipped(cardId)
     }
 
     private fun RecyclerView.setCards(cards: List<Card>) {
         layoutManager = GridLayoutManager(this@MainActivity, determineSpan(cards.size))
-        adapter = CardsAdapter(this@MainActivity, cards)
+        this@MainActivity.adapter = CardsAdapter(this@MainActivity, this@MainActivity, cards)
+        adapter = this@MainActivity.adapter
         if (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
         }

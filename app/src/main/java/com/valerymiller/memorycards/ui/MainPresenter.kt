@@ -24,11 +24,10 @@ private const val PREF_CARD_NUMBER = "card_number"
 interface MainPresenter {
     fun onCreateGame()
     fun onRestartGame()
-    fun onWinGame()
     fun onNextGame()
     fun onSettingsOpen()
     fun onSettingsClosed(cardNumber: Int, nickname: String)
-    fun onCardFlipped()
+    fun onCardFlipped(cardId: Int)
 }
 
 class MainPresenterImpl (
@@ -45,10 +44,32 @@ class MainPresenterImpl (
         }
     }
 
+    private val closeHandler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            view.closeCards()
+            openCards.clear()
+        }
+    }
+
+    private val hideHandler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            view.hideCards()
+            openCards.clear()
+            hidedCards += 2
+            if (hidedCards == cardNumber) {
+                onWinGame()
+            }
+        }
+    }
+
     private var nickname = context.resources.getString(R.string.default_nickname)
     private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
     private var images: List<Bitmap> = listOf()
     private var actionCount = 0
+    private val openCards = mutableListOf<Int>()
+    private var hidedCards = 0
 
     override fun onCreateGame() {
         refresh()
@@ -56,16 +77,6 @@ class MainPresenterImpl (
 
     override fun onRestartGame() {
         refresh()
-    }
-
-    override fun onWinGame() {
-        view.showWinFragment(
-            Results(
-                nickname,
-                actionCount,
-                calculateScores(cardNumber, actionCount)
-            )
-        )
     }
 
     override fun onNextGame() {
@@ -86,9 +97,26 @@ class MainPresenterImpl (
         }
     }
 
-    override fun onCardFlipped() {
+    override fun onCardFlipped(cardId: Int) {
+        openCards.add(cardId)
+        if (openCards.size > 1) {
+            if (openCards[0] == openCards[1])
+                startHideTimer()
+            else startCloseTimer()
+        }
+
         actionCount++
         view.setActionCountText(actionCount.toString())
+    }
+
+    private fun onWinGame() {
+        view.showWinFragment(
+            Results(
+                nickname,
+                actionCount,
+                calculateScores(cardNumber, actionCount)
+            )
+        )
     }
 
     private fun refresh() {
@@ -167,5 +195,19 @@ class MainPresenterImpl (
 
     private fun calculateScores(cardNumber: Int, actionCount: Int): Int {
         return cardNumber * actionCount
+    }
+
+    private fun startCloseTimer() {
+        Thread(Runnable {
+            Thread.sleep(1000)
+            closeHandler.sendEmptyMessage(1)
+        }).start()
+    }
+
+    private fun startHideTimer() {
+        Thread(Runnable {
+            Thread.sleep(1000)
+            hideHandler.sendEmptyMessage(1)
+        }).start()
     }
 }
