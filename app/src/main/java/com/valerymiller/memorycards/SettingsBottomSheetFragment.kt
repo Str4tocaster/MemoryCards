@@ -73,11 +73,6 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
         seekBar.setProgress(cardNumber.toFloat())
     }
 
-    override fun onPause() {
-        super.onPause()
-        listener?.onSettingsClosed(cardNumber, edtNickname.text.toString())
-    }
-
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
         if (activity is SettingsFragmentListener) {
@@ -86,6 +81,7 @@ class SettingsBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     override fun onDetach() {
+        listener?.onSettingsClosed(cardNumber, edtNickname.text.toString())
         super.onDetach()
         listener = null
     }
