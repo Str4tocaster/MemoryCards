@@ -16,6 +16,7 @@ interface MainView {
     fun showProgress(show: Boolean)
     fun showWinFragment(results: Results)
     fun closeWinFragment()
+    fun showSettingsFragment(cardNumber: Int, nickname: String)
     fun getPreferences(): SharedPreferences?
 }
 
@@ -23,7 +24,8 @@ class MainActivity :
     AppCompatActivity(),
     MainView,
     View.OnClickListener,
-    WinFragmentListener
+    WinFragmentListener,
+    SettingsFragmentListener
 {
 
     lateinit var presenter: MainPresenter
@@ -41,7 +43,7 @@ class MainActivity :
 
     override fun onClick(view: View?) {
         when(view) {
-            btnSettings -> SettingsBottomSheetFragment().show(supportFragmentManager, "settings")
+            btnSettings -> presenter.onSettingsOpen()
             btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
             btnRestart -> presenter.onRestartGame()
         }
@@ -74,15 +76,18 @@ class MainActivity :
         WinFragment.close(supportFragmentManager)
     }
 
+    override fun showSettingsFragment(cardNumber: Int, nickname: String) {
+        SettingsBottomSheetFragment.show(supportFragmentManager, cardNumber, nickname)
+    }
+
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
     override fun onNext() {
         presenter.onNextGame()
     }
 
-    fun onSettingsClosed() {
-        // todo сделать через интерфейс
-        presenter.onSettingsClosed()
+    override fun onSettingsClosed(cardNumber: Int, nickname: String) {
+        presenter.onSettingsClosed(cardNumber, nickname)
     }
 
     fun onCardFlipped() {

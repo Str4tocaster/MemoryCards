@@ -14,12 +14,16 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.random.Random
 
+private const val PREF_NICKNAME = "nickname"
+private const val PREF_CARD_NUMBER = "card_number"
+
 interface MainPresenter {
     fun onCreateGame()
     fun onRestartGame()
     fun onWinGame()
     fun onNextGame()
-    fun onSettingsClosed()
+    fun onSettingsOpen()
+    fun onSettingsClosed(cardNumber: Int, nickname: String)
     fun onCardFlipped()
 }
 
@@ -59,8 +63,13 @@ class MainPresenterImpl (
         view.closeWinFragment()
     }
 
-    override fun onSettingsClosed() {
+    override fun onSettingsOpen() {
+        view.showSettingsFragment(cardNumber, nickname)
+    }
+
+    override fun onSettingsClosed(cardNumber: Int, nickname: String) {
         // todo() if settings changed
+        saveSettings(cardNumber, nickname)
         refresh()
     }
 
@@ -84,8 +93,18 @@ class MainPresenterImpl (
 
     private fun loadSettings() {
         view.getPreferences()?.let { preferences ->
-            nickname = preferences.getString(SettingsBottomSheetFragment.constants.NICKNAME, nickname) ?: nickname
-            cardNumber = preferences.getInt(SettingsBottomSheetFragment.constants.CARD_NUMBER, cardNumber)
+            nickname = preferences.getString(PREF_NICKNAME, nickname) ?: nickname
+            cardNumber = preferences.getInt(PREF_CARD_NUMBER, cardNumber)
+        }
+    }
+
+    private fun saveSettings(cardNumber: Int, nickname: String) {
+        view.getPreferences()?.let { preferences ->
+            val ed = preferences.edit()
+            if (nickname.trim().isNotEmpty())
+                ed.putString(PREF_NICKNAME, nickname)
+            ed.putInt(PREF_CARD_NUMBER, cardNumber)
+            ed.commit()
         }
     }
 
