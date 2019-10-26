@@ -35,34 +35,9 @@ class MainPresenterImpl (
     private val view: MainView
 ) : MainPresenter {
 
-    private val handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            view.updateScreen(generateCards(images), getRandomCardBack(), nickname)
-            view.setActionCountText("0")
-            view.showProgress(false)
-        }
-    }
-
-    private val closeHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            view.closeCards()
-            openCards.clear()
-        }
-    }
-
-    private val hideHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            view.hideCards()
-            openCards.clear()
-            hidedCards += 2
-            if (hidedCards == cardNumber) {
-                onWinGame()
-            }
-        }
-    }
+    private val loadedHandler = ActionHandler(::updateScreen)
+    private val closeHandler = ActionHandler(::closeCards)
+    private val hideHandler = ActionHandler(::hideCards)
 
     private var nickname = context.resources.getString(R.string.default_nickname)
     private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
@@ -109,6 +84,26 @@ class MainPresenterImpl (
         view.setActionCountText(actionCount.toString())
     }
 
+    private fun updateScreen() {
+        view.updateScreen(generateCards(images), getRandomCardBack(), nickname)
+        view.setActionCountText("0")
+        view.showProgress(false)
+    }
+
+    private fun closeCards() {
+        view.closeCards()
+        openCards.clear()
+    }
+
+    private fun hideCards() {
+        view.hideCards()
+        openCards.clear()
+        hidedCards += 2
+        if (hidedCards == cardNumber) {
+            onWinGame()
+        }
+    }
+
     private fun onWinGame() {
         view.showWinFragment(
             Results(
@@ -152,7 +147,7 @@ class MainPresenterImpl (
     private fun requestImage(images: MutableList<Bitmap>) {
         if (images.size >= cardNumber / 2) {
             this.images = images
-            handler.sendEmptyMessage(1)
+            loadedHandler.sendEmptyMessage(1)
             return
         }
         val service = LoremPicsum.create()
@@ -219,5 +214,12 @@ class MainPresenterImpl (
             Thread.sleep(1000)
             hideHandler.sendEmptyMessage(1)
         }).start()
+    }
+
+    class ActionHandler(val action: () -> Unit): Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            action()
+        }
     }
 }
