@@ -34,11 +34,13 @@ class MainActivity :
     View.OnClickListener,
     WinFragmentListener,
     SettingsFragmentListener,
-    CardsAdapterListener
+    CardsAdapterListener,
+    ShimmerCardsAdapterListener
 {
 
     lateinit var presenter: MainPresenter
-    lateinit var adapter: CardsAdapter
+    lateinit var cardsAdapter: CardsAdapter
+    lateinit var shimmerAdapter: ShimmerCardsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,8 +79,12 @@ class MainActivity :
 
     override fun hideProgress() {
         shimmerView.stopShimmer()
-        shimmerView.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
+        shimmerAdapter.startHideAnimation()
+    }
+
+    override fun onHideAnimationEnd() {
+        shimmerView.visibility = View.GONE
     }
 
     override fun showWinFragment(results: Results) {
@@ -100,11 +106,11 @@ class MainActivity :
     override fun getPreferences(): SharedPreferences? = getPreferences(Context.MODE_PRIVATE)
 
     override fun closeCards() {
-        adapter.closeCards()
+        cardsAdapter.closeCards()
     }
 
     override fun hideCards() {
-        adapter.hideCards()
+        cardsAdapter.hideCards()
     }
 
     override fun onNext() {
@@ -121,8 +127,8 @@ class MainActivity :
 
     private fun RecyclerView.setCards(cardBack: Drawable?, cards: List<Card>) {
         layoutManager = GridLayoutManager(this@MainActivity, determineSpan(cards.size))
-        this@MainActivity.adapter = CardsAdapter(this@MainActivity, this@MainActivity, cardBack, cards)
-        adapter = this@MainActivity.adapter
+        this@MainActivity.cardsAdapter = CardsAdapter(this@MainActivity, this@MainActivity, cardBack, cards)
+        adapter = this@MainActivity.cardsAdapter
         if (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
         }
@@ -137,7 +143,8 @@ class MainActivity :
 
     private fun RecyclerView.setShimmerCards(count: Int) {
         layoutManager = GridLayoutManager(this@MainActivity, determineSpan(count))
-        adapter = ShimmerCardsAdapter(this@MainActivity, count)
+        this@MainActivity.shimmerAdapter = ShimmerCardsAdapter(this@MainActivity, this@MainActivity, count)
+        adapter = this@MainActivity.shimmerAdapter
         if (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
         }
