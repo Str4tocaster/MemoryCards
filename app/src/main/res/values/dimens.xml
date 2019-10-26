@@ -5,4 +5,5 @@
     <integer name="card_flip_time_half">250</integer>
     <integer name="card_number_min">12</integer>
     <integer name="card_number_max">24</integer>
+    <integer name="shimmer_duration">1500</integer>
 </resources>

@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 interface MainView {
     fun updateScreen(cards: List<Card>, cardBack: Drawable?, nickname: String)
     fun setActionCountText(actionCount: String)
-    fun showProgress(show: Boolean)
+    fun showProgress(size: Int)
+    fun hideProgress()
     fun showWinFragment(results: Results)
     fun closeWinFragment()
     fun showSettingsFragment(cardNumber: Int, nickname: String)
@@ -67,14 +68,17 @@ class MainActivity :
         tvActionsCount.text = actionCount
     }
 
-    override fun showProgress(show: Boolean) {
-        if (show) {
-            progressBar.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-        } else {
-            progressBar.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-        }
+    override fun showProgress(size: Int) {
+        shimmerRecyclerView.setShimmerCards(size)
+        shimmerView.startShimmer()
+        shimmerView.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+    }
+
+    override fun hideProgress() {
+        shimmerView.stopShimmer()
+        shimmerView.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 
     override fun showWinFragment(results: Results) {
@@ -126,6 +130,21 @@ class MainActivity :
             GridSpacingItemDecoration(
                 determineSpan(cards.size),
                 determineSpacing(cards.size),
+                true
+            )
+        )
+    }
+
+    private fun RecyclerView.setShimmerCards(count: Int) {
+        layoutManager = GridLayoutManager(this@MainActivity, determineSpan(count))
+        adapter = ShimmerCardsAdapter(this@MainActivity, count)
+        if (itemDecorationCount > 0) {
+            removeItemDecorationAt(0)
+        }
+        addItemDecoration(
+            GridSpacingItemDecoration(
+                determineSpan(count),
+                determineSpacing(count),
                 true
             )
         )

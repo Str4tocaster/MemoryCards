@@ -90,7 +90,7 @@ class MainPresenterImpl (
     private fun updateScreen() {
         view.updateScreen(generateCards(images), getRandomCardBack(), nickname)
         view.setActionCountText("0")
-        view.showProgress(false)
+        view.hideProgress()
     }
 
     private fun closeCards() {
@@ -123,7 +123,7 @@ class MainPresenterImpl (
     }
 
     private fun updateGameField() {
-        view.showProgress(true)
+        view.showProgress(cardNumber)
         Thread(Runnable {
             val drawables = mutableListOf<Bitmap>()
             requestImage(drawables)
