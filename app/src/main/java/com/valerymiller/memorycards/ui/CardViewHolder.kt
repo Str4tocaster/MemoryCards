@@ -29,6 +29,7 @@ class CardViewHolder(
     private val animationOut = initAnimationOut()
     private val animationUp = initAnimationUp()
     private val animationDown = initAnimationDown()
+    private val animationColor = initAnimationColor()
     private val cardFrontLayout = itemView.card_front
     private val cardBackLayout = itemView.card_back
 
@@ -46,9 +47,10 @@ class CardViewHolder(
     }
 
     fun hideCard() {
-        imageViewBack.setImageDrawable(context.getDrawable(R.drawable.unactive_card_background))
+        animationColor.setTarget(imageViewBack)
         animationUp.setTarget(cardBackLayout)
         animationDown.setTarget(cardBackLayout)
+        animationColor.start()
         animationUp.start()
         animationDown.start()
     }
@@ -71,4 +73,7 @@ class CardViewHolder(
 
     private fun initAnimationDown(): AnimatorSet =
         AnimatorInflater.loadAnimator(context, R.animator.animation_down) as AnimatorSet
+
+    private fun initAnimationColor(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_color) as AnimatorSet
 }

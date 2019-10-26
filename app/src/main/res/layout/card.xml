@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.valerymiller.memorycards.widget.SquareFrameLayout android:id="@+id/cardContainer"
+<com.valerymiller.memorycards.widget.SquareFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardContainer"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_centerInParent="true">
 
     <FrameLayout
         android:id="@+id/card_back"
-        android:alpha="0"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:alpha="0">
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="6dp"
             android:layout_margin="8dp"
-            >
+            app:cardCornerRadius="6dp">
 
-            <ImageView
-                android:id="@+id/imageViewBack"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:src="@drawable/card_back_1"
-                android:scaleType="centerCrop"
-                />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/unactive_card_background">
 
+                <ImageView
+                    android:id="@+id/imageViewBack"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:scaleType="centerCrop" />
+
+            </FrameLayout>
         </androidx.cardview.widget.CardView>
-
     </FrameLayout>
+
     <FrameLayout
         android:id="@+id/card_front"
         android:layout_width="wrap_content"
@@ -38,20 +42,21 @@
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="6dp"
             android:layout_margin="8dp"
-            >
+            app:cardCornerRadius="6dp">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:src="@drawable/card_back_1"
-                android:scaleType="centerCrop"
-                />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/unactive_card_background">
 
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:scaleType="centerCrop" />
+
+            </FrameLayout>
         </androidx.cardview.widget.CardView>
-
     </FrameLayout>
-
 </com.valerymiller.memorycards.widget.SquareFrameLayout>

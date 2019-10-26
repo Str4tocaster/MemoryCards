@@ -20,6 +20,8 @@ import kotlin.random.Random
 
 private const val PREF_NICKNAME = "nickname"
 private const val PREF_CARD_NUMBER = "card_number"
+private const val CLOSE_CARD_DELAY = 1000L
+private const val HIDE_CARD_DELAY = 600L
 
 interface MainPresenter {
     fun onCreateGame()
@@ -204,14 +206,14 @@ class MainPresenterImpl (
 
     private fun startCloseTimer() {
         Thread(Runnable {
-            Thread.sleep(1000)
+            Thread.sleep(CLOSE_CARD_DELAY)
             closeHandler.sendEmptyMessage(1)
         }).start()
     }
 
     private fun startHideTimer() {
         Thread(Runnable {
-            Thread.sleep(1000)
+            Thread.sleep(HIDE_CARD_DELAY)
             hideHandler.sendEmptyMessage(1)
         }).start()
     }
