@@ -40,6 +40,7 @@ class MainPresenterImpl (
     private val loadedHandler = ActionHandler(::updateScreen)
     private val closeHandler = ActionHandler(::closeCards)
     private val hideHandler = ActionHandler(::hideCards)
+    private val winHandler = ActionHandler(::onWinGame)
 
     private var nickname = context.resources.getString(R.string.default_nickname)
     private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
@@ -102,7 +103,7 @@ class MainPresenterImpl (
         openCards.clear()
         hidedCards += 2
         if (hidedCards == cardNumber) {
-            onWinGame()
+            startWinTimer()
         }
     }
 
@@ -208,6 +209,13 @@ class MainPresenterImpl (
         Thread(Runnable {
             Thread.sleep(CLOSE_CARD_DELAY)
             closeHandler.sendEmptyMessage(1)
+        }).start()
+    }
+
+    private fun startWinTimer() {
+        Thread(Runnable {
+            Thread.sleep(CLOSE_CARD_DELAY)
+            winHandler.sendEmptyMessage(1)
         }).start()
     }
 
