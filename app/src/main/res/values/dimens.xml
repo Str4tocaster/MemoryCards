@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="card_up_time">180</integer>
     <integer name="card_flip_time">500</integer>
     <integer name="card_flip_time_half">250</integer>
     <integer name="card_number_min">12</integer>

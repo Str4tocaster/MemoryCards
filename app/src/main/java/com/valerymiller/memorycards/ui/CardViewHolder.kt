@@ -27,6 +27,8 @@ class CardViewHolder(
 
     private val animationIn = initAnimationIn()
     private val animationOut = initAnimationOut()
+    private val animationUp = initAnimationUp()
+    private val animationDown = initAnimationDown()
     private val cardFrontLayout = itemView.card_front
     private val cardBackLayout = itemView.card_back
 
@@ -44,7 +46,11 @@ class CardViewHolder(
     }
 
     fun hideCard() {
-        cardContainer.visibility = View.GONE
+        imageViewBack.setImageDrawable(context.getDrawable(R.drawable.unactive_card_background))
+        animationUp.setTarget(cardBackLayout)
+        animationDown.setTarget(cardBackLayout)
+        animationUp.start()
+        animationDown.start()
     }
 
     private fun setCameraDistance() {
@@ -59,4 +65,10 @@ class CardViewHolder(
 
     private fun initAnimationOut(): AnimatorSet =
         AnimatorInflater.loadAnimator(context, R.animator.animation_out) as AnimatorSet
+
+    private fun initAnimationUp(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_up) as AnimatorSet
+
+    private fun initAnimationDown(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_down) as AnimatorSet
 }
