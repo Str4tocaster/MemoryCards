@@ -38,7 +38,7 @@ class MainPresenterImpl (
     private val handler = object : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            view.updateScreen(generateCards(images), nickname)
+            view.updateScreen(generateCards(images), getRandomCardBack(), nickname)
             view.setActionCountText("0")
             view.showProgress(false)
         }
@@ -196,6 +196,16 @@ class MainPresenterImpl (
     private fun calculateScores(cardNumber: Int, actionCount: Int): Int {
         return cardNumber * actionCount
     }
+
+    private fun getRandomCardBack(): Drawable? =
+        when (Random.nextInt(0, 6)) {
+            0 -> context.getDrawable(R.drawable.card_back_1)
+            1 -> context.getDrawable(R.drawable.card_back_2)
+            2 -> context.getDrawable(R.drawable.card_back_3)
+            3 -> context.getDrawable(R.drawable.card_back_4)
+            4 -> context.getDrawable(R.drawable.card_back_5)
+            else -> context.getDrawable(R.drawable.card_back_6)
+        }
 
     private fun startCloseTimer() {
         Thread(Runnable {

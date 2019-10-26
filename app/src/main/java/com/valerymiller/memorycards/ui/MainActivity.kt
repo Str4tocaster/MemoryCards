@@ -2,6 +2,7 @@ package com.valerymiller.memorycards.ui
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -15,7 +16,7 @@ import com.valerymiller.memorycards.widget.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 
 interface MainView {
-    fun updateScreen(cards: List<Card>, nickname: String)
+    fun updateScreen(cards: List<Card>, cardBack: Drawable?, nickname: String)
     fun setActionCountText(actionCount: String)
     fun showProgress(show: Boolean)
     fun showWinFragment(results: Results)
@@ -57,8 +58,8 @@ class MainActivity :
         }
     }
 
-    override fun updateScreen(cards: List<Card>, nickname: String) {
-        recyclerView.setCards(cards)
+    override fun updateScreen(cards: List<Card>, cardBack: Drawable?, nickname: String) {
+        recyclerView.setCards(cardBack, cards)
         tvNickname.text = nickname
     }
 
@@ -114,9 +115,9 @@ class MainActivity :
         presenter.onCardFlipped(cardId)
     }
 
-    private fun RecyclerView.setCards(cards: List<Card>) {
+    private fun RecyclerView.setCards(cardBack: Drawable?, cards: List<Card>) {
         layoutManager = GridLayoutManager(this@MainActivity, determineSpan(cards.size))
-        this@MainActivity.adapter = CardsAdapter(this@MainActivity, this@MainActivity, cards)
+        this@MainActivity.adapter = CardsAdapter(this@MainActivity, this@MainActivity, cardBack, cards)
         adapter = this@MainActivity.adapter
         if (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
