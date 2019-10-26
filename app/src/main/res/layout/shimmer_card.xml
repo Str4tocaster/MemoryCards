@@ -8,10 +8,16 @@
     android:layout_centerInParent="true">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="@drawable/unactive_card_background"
-        app:cardCornerRadius="6dp" />
+        app:cardCornerRadius="6dp">
 
+        <View
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            />
+
+    </androidx.cardview.widget.CardView>
 </com.valerymiller.memorycards.widget.SquareFrameLayout>
