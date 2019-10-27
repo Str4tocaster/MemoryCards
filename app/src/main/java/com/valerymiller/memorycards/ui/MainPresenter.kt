@@ -81,10 +81,9 @@ class MainPresenterImpl (
             if (openCards[0] == openCards[1])
                 startHideTimer()
             else startCloseTimer()
+            actionCount++
+            view.setActionCountText(actionCount.toString())
         }
-
-        actionCount++
-        view.setActionCountText(actionCount.toString())
     }
 
     override fun onWinAnimationEnd() {
@@ -118,7 +117,10 @@ class MainPresenterImpl (
     }
 
     private fun refresh() {
+        actionCount = 0
+        hidedCards = 0
         loadSettings()
+        view.setActionCountText(actionCount.toString())
         updateGameField()
     }
 
