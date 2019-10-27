@@ -143,7 +143,28 @@ class MainPresenterImpl (
     }
 
     private fun calculateScores(cardNumber: Int, actionCount: Int): Int {
-        return cardNumber * actionCount
+        val minActions = when(cardNumber) {
+            24 -> 12
+            20 -> 10
+            16 -> 8
+            12 -> 6
+            else -> 0
+        }
+        val maxScores = when(cardNumber) {
+            24 -> 50000
+            20 -> 40000
+            16 -> 30000
+            12 -> 20000
+            else -> 0
+        }
+        val penalty = when(cardNumber) {
+            24 -> 1600
+            20 -> 1800
+            16 -> 2000
+            12 -> 2200
+            else -> 0
+        }
+        return maxScores - ((actionCount - minActions) * penalty)
     }
 
     private fun getRandomCardBack(): Drawable? =
