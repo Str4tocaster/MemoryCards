@@ -165,18 +165,4 @@ class MainActivity :
             )
         )
     }
-
-    private fun determineSpan(cardNumber: Int) =
-        when(cardNumber) {
-            12 -> 3
-            else -> 4
-        }
-
-    private fun determineSpacing(cardNumber: Int) =
-        when(cardNumber) {
-            12 -> 20
-            16 -> 16
-            20 -> 12
-            else -> 8
-        }
 }

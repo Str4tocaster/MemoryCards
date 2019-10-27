@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.valerymiller.memorycards.R
 import com.valerymiller.memorycards.model.Card
 
-private const val DELAY_STEP = 30L
-
 interface CardsAdapterListener {
     fun onCardFlipped(cardId: Int)
     fun onWinAnimationEnd()
@@ -76,7 +74,7 @@ class CardsAdapter(
         var delay = 0L
         cards.map { card ->
             card.upAndDownCard(delay, true)
-            delay += DELAY_STEP
+            delay += determineDelayStep(cards.size)
         }
     }
 }

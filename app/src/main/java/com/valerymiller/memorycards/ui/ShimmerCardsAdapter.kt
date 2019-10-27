@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.valerymiller.memorycards.R
 
-private const val DELAY_STEP = 30L
-
 interface ShimmerCardsAdapterListener {
     fun onHideAnimationEnd()
 }
@@ -44,7 +42,7 @@ class ShimmerCardsAdapter(
         var delay = 0L
         cards.map { card ->
             card.animateCard(delay)
-            delay += DELAY_STEP
+            delay += determineDelayStep(cards.size)
         }
     }
 }
