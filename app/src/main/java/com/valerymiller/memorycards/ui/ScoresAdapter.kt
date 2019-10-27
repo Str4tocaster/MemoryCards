@@ -24,7 +24,7 @@ class ScoresAdapter(
     override fun onBindViewHolder(holder: ScoreViewHolder, position: Int) {
         val result = items[position]
         holder.apply {
-            tvNumber.text = result.position.toString()
+            tvNumber.text = "${result.position}. "
             tvNickname.text = result.nickname
             tvScore.text = result.scores.toString()
         }
