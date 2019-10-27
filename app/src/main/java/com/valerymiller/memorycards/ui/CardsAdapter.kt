@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.valerymiller.memorycards.R
 import com.valerymiller.memorycards.model.Card
 
+private const val DELAY_STEP = 30L
+
 interface CardsAdapterListener {
     fun onCardFlipped(cardId: Int)
 }
@@ -20,11 +22,14 @@ class CardsAdapter(
 ) : RecyclerView.Adapter<CardViewHolder>(),
     CardListener
 {
+    private val cards = mutableListOf<CardViewHolder>()
     private val openCards = mutableListOf<CardViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder(context, this, LayoutInflater.from(context)
-            .inflate(R.layout.card, parent, false))
+            .inflate(R.layout.card, parent, false)).apply {
+            cards.add(this)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -56,5 +61,13 @@ class CardsAdapter(
         openCards[0].hideCard()
         openCards[1].hideCard()
         openCards.clear()
+    }
+
+    fun startUpAndDownAnimation() {
+        var delay = 0L
+        cards.map { card ->
+            card.upAndDownCard(delay)
+            delay += DELAY_STEP
+        }
     }
 }

@@ -21,6 +21,7 @@ import kotlin.random.Random
 private const val PREF_NICKNAME = "nickname"
 private const val PREF_CARD_NUMBER = "card_number"
 private const val CLOSE_CARD_DELAY = 1000L
+private const val WIN_DELAY = 600L
 private const val HIDE_CARD_DELAY = 600L
 
 interface MainPresenter {
@@ -214,7 +215,7 @@ class MainPresenterImpl (
 
     private fun startWinTimer() {
         Thread(Runnable {
-            Thread.sleep(CLOSE_CARD_DELAY)
+            Thread.sleep(WIN_DELAY)
             winHandler.sendEmptyMessage(1)
         }).start()
     }

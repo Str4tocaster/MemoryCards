@@ -88,6 +88,7 @@ class MainActivity :
     }
 
     override fun showWinFragment(results: Results) {
+        cardsAdapter.startUpAndDownAnimation()
         WinFragment.show(supportFragmentManager, results)
     }
 

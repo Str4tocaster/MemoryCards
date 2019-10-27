@@ -35,6 +35,8 @@ class CardViewHolder(
 
     init {
         setCameraDistance()
+        animationAlpha.setTarget(imageViewBack)
+        animationUpAndDown.setTarget(cardBackLayout)
     }
 
     fun flipCard() {
@@ -47,9 +49,12 @@ class CardViewHolder(
     }
 
     fun hideCard() {
-        animationAlpha.setTarget(imageViewBack)
-        animationUpAndDown.setTarget(cardBackLayout)
         animationAlpha.start()
+        upAndDownCard(0L)
+    }
+
+    fun upAndDownCard(delay: Long) {
+        animationUpAndDown.startDelay = delay
         animationUpAndDown.start()
     }
 
