@@ -1,5 +1,6 @@
 package com.valerymiller.memorycards.ui
 
+import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
@@ -10,6 +11,7 @@ import kotlinx.android.synthetic.main.card.view.*
 
 interface CardListener {
     fun onCardOpen(card: CardViewHolder)
+    fun onWinAnimationEnd()
 }
 
 class CardViewHolder(
@@ -50,11 +52,22 @@ class CardViewHolder(
 
     fun hideCard() {
         animationAlpha.start()
-        upAndDownCard(0L)
+        upAndDownCard(0L, false)
     }
 
-    fun upAndDownCard(delay: Long) {
+    fun upAndDownCard(delay: Long, needEndCallback: Boolean) {
         animationUpAndDown.startDelay = delay
+        animationUpAndDown.removeAllListeners()
+        if (needEndCallback) {
+            animationUpAndDown.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
+                    listener.onWinAnimationEnd()
+                }
+            })
+        }
         animationUpAndDown.start()
     }
 

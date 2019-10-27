@@ -21,7 +21,6 @@ import kotlin.random.Random
 private const val PREF_NICKNAME = "nickname"
 private const val PREF_CARD_NUMBER = "card_number"
 private const val CLOSE_CARD_DELAY = 1000L
-private const val WIN_DELAY = 600L
 private const val HIDE_CARD_DELAY = 600L
 
 interface MainPresenter {
@@ -31,6 +30,7 @@ interface MainPresenter {
     fun onSettingsOpen()
     fun onSettingsClosed(cardNumber: Int, nickname: String)
     fun onCardFlipped(cardId: Int)
+    fun onWinAnimationEnd()
 }
 
 class MainPresenterImpl (
@@ -41,7 +41,6 @@ class MainPresenterImpl (
     private val loadedHandler = ActionHandler(::updateScreen)
     private val closeHandler = ActionHandler(::closeCards)
     private val hideHandler = ActionHandler(::hideCards)
-    private val winHandler = ActionHandler(::onWinGame)
 
     private var nickname = context.resources.getString(R.string.default_nickname)
     private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
@@ -88,6 +87,16 @@ class MainPresenterImpl (
         view.setActionCountText(actionCount.toString())
     }
 
+    override fun onWinAnimationEnd() {
+        view.showWinFragment(
+            Results(
+                nickname,
+                actionCount,
+                calculateScores(cardNumber, actionCount)
+            )
+        )
+    }
+
     private fun updateScreen() {
         view.updateScreen(generateCards(images), getRandomCardBack(), nickname)
         view.setActionCountText("0")
@@ -104,18 +113,8 @@ class MainPresenterImpl (
         openCards.clear()
         hidedCards += 2
         if (hidedCards == cardNumber) {
-            startWinTimer()
+            view.showWinAnimation()
         }
-    }
-
-    private fun onWinGame() {
-        view.showWinFragment(
-            Results(
-                nickname,
-                actionCount,
-                calculateScores(cardNumber, actionCount)
-            )
-        )
     }
 
     private fun refresh() {
@@ -210,13 +209,6 @@ class MainPresenterImpl (
         Thread(Runnable {
             Thread.sleep(CLOSE_CARD_DELAY)
             closeHandler.sendEmptyMessage(1)
-        }).start()
-    }
-
-    private fun startWinTimer() {
-        Thread(Runnable {
-            Thread.sleep(WIN_DELAY)
-            winHandler.sendEmptyMessage(1)
         }).start()
     }
 

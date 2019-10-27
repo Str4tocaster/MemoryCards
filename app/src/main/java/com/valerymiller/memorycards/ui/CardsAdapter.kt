@@ -12,6 +12,7 @@ private const val DELAY_STEP = 30L
 
 interface CardsAdapterListener {
     fun onCardFlipped(cardId: Int)
+    fun onWinAnimationEnd()
 }
 
 class CardsAdapter(
@@ -24,6 +25,7 @@ class CardsAdapter(
 {
     private val cards = mutableListOf<CardViewHolder>()
     private val openCards = mutableListOf<CardViewHolder>()
+    private var cardsAnimated: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder(context, this, LayoutInflater.from(context)
@@ -51,6 +53,13 @@ class CardsAdapter(
         listener.onCardFlipped(card.cardId)
     }
 
+    override fun onWinAnimationEnd() {
+        cardsAnimated++
+        if (cardsAnimated == items.size) {
+            listener.onWinAnimationEnd()
+        }
+    }
+
     fun closeCards() {
         openCards[0].flipCard()
         openCards[1].flipCard()
@@ -66,7 +75,7 @@ class CardsAdapter(
     fun startUpAndDownAnimation() {
         var delay = 0L
         cards.map { card ->
-            card.upAndDownCard(delay)
+            card.upAndDownCard(delay, true)
             delay += DELAY_STEP
         }
     }

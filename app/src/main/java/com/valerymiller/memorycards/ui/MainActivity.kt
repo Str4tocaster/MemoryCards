@@ -20,6 +20,7 @@ interface MainView {
     fun setActionCountText(actionCount: String)
     fun showProgress(size: Int)
     fun hideProgress()
+    fun showWinAnimation()
     fun showWinFragment(results: Results)
     fun closeWinFragment()
     fun showSettingsFragment(cardNumber: Int, nickname: String)
@@ -87,8 +88,15 @@ class MainActivity :
         shimmerView.visibility = View.GONE
     }
 
-    override fun showWinFragment(results: Results) {
+    override fun showWinAnimation() {
         cardsAdapter.startUpAndDownAnimation()
+    }
+
+    override fun onWinAnimationEnd() {
+        presenter.onWinAnimationEnd()
+    }
+
+    override fun showWinFragment(results: Results) {
         WinFragment.show(supportFragmentManager, results)
     }
 
