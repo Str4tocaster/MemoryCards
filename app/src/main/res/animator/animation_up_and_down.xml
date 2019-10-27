@@ -13,4 +13,18 @@
         android:propertyName="scaleY"
         android:duration="@integer/card_up_time" />
 
+    <objectAnimator
+        android:valueFrom="1.1"
+        android:valueTo="1.0"
+        android:propertyName="scaleX"
+        android:duration="@integer/card_up_time"
+        android:startOffset="@integer/card_up_time" />
+
+    <objectAnimator
+        android:valueFrom="1.1"
+        android:valueTo="1.0"
+        android:propertyName="scaleY"
+        android:duration="@integer/card_up_time"
+        android:startOffset="@integer/card_up_time" />
+
 </set>

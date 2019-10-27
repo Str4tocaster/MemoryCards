@@ -20,12 +20,12 @@ class ShimmerCardViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val cardView = itemView.cardView
-    private val animationShimmerHide = initAnimationShimmerHide()
+    private val animationAlpha = initAnimationAlpha()
 
     fun animateCard(delay: Long) {
-        animationShimmerHide.setTarget(cardView)
-        animationShimmerHide.startDelay = delay
-        animationShimmerHide.addListener(object : Animator.AnimatorListener {
+        animationAlpha.setTarget(cardView)
+        animationAlpha.startDelay = delay
+        animationAlpha.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
             override fun onAnimationCancel(animation: Animator?) {}
             override fun onAnimationStart(animation: Animator?) {}
@@ -33,10 +33,10 @@ class ShimmerCardViewHolder(
                 listener.onAnimationEnd()
             }
         })
-        animationShimmerHide.start()
+        animationAlpha.start()
     }
 
-    private fun initAnimationShimmerHide(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_shimmer_hide) as AnimatorSet
+    private fun initAnimationAlpha(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_alpha) as AnimatorSet
 
 }

@@ -25,13 +25,13 @@ class CardViewHolder(
     val imageView = itemView.imageView
     val imageViewBack = itemView.imageViewBack
 
-    private val animationIn = initAnimationIn()
-    private val animationOut = initAnimationOut()
-    private val animationUp = initAnimationUp()
-    private val animationDown = initAnimationDown()
-    private val animationColor = initAnimationColor()
     private val cardFrontLayout = itemView.card_front
     private val cardBackLayout = itemView.card_back
+
+    private val animationFlipIn = initAnimationFlipIn()
+    private val animationFlipOut = initAnimationFlipOut()
+    private val animationUpAndDown = initAnimationUpAndDown()
+    private val animationAlpha = initAnimationAlpha()
 
     init {
         setCameraDistance()
@@ -39,20 +39,18 @@ class CardViewHolder(
 
     fun flipCard() {
         open = !open
-        animationOut.setTarget(if (open) cardFrontLayout else cardBackLayout)
-        animationIn.setTarget(if (open) cardBackLayout else cardFrontLayout)
-        animationOut.start()
-        animationIn.start()
+        animationFlipOut.setTarget(if (open) cardFrontLayout else cardBackLayout)
+        animationFlipIn.setTarget(if (open) cardBackLayout else cardFrontLayout)
+        animationFlipOut.start()
+        animationFlipIn.start()
         if (open) listener.onCardOpen(this)
     }
 
     fun hideCard() {
-        animationColor.setTarget(imageViewBack)
-        animationUp.setTarget(cardBackLayout)
-        animationDown.setTarget(cardBackLayout)
-        animationColor.start()
-        animationUp.start()
-        animationDown.start()
+        animationAlpha.setTarget(imageViewBack)
+        animationUpAndDown.setTarget(cardBackLayout)
+        animationAlpha.start()
+        animationUpAndDown.start()
     }
 
     private fun setCameraDistance() {
@@ -62,18 +60,15 @@ class CardViewHolder(
         cardBackLayout.setCameraDistance(scale)
     }
 
-    private fun initAnimationIn(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_in) as AnimatorSet
+    private fun initAnimationFlipIn(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_flip_in) as AnimatorSet
 
-    private fun initAnimationOut(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_out) as AnimatorSet
+    private fun initAnimationFlipOut(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_flip_out) as AnimatorSet
 
-    private fun initAnimationUp(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_up) as AnimatorSet
+    private fun initAnimationUpAndDown(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_up_and_down) as AnimatorSet
 
-    private fun initAnimationDown(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_down) as AnimatorSet
-
-    private fun initAnimationColor(): AnimatorSet =
-        AnimatorInflater.loadAnimator(context, R.animator.animation_color) as AnimatorSet
+    private fun initAnimationAlpha(): AnimatorSet =
+        AnimatorInflater.loadAnimator(context, R.animator.animation_alpha) as AnimatorSet
 }
