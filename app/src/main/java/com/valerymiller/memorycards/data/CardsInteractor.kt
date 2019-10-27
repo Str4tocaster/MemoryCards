@@ -49,7 +49,7 @@ class CardsInteractor(
         val service = LoremPicsum.create()
         service.randomImage().enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
+                // todo обрабатывать ошибку
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
