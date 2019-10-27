@@ -57,7 +57,7 @@ class MainActivity :
     override fun onClick(view: View?) {
         when(view) {
             btnSettings -> presenter.onSettingsOpen()
-            btnTop -> Toast.makeText(this, "Top", Toast.LENGTH_SHORT).show()
+            btnTop -> ScoresBottomSheetFragment.show(supportFragmentManager)
             btnRestart -> presenter.onRestartGame()
         }
     }
