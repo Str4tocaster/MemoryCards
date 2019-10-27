@@ -5,11 +5,11 @@ import androidx.room.*
 @Dao
 interface ScoreDao {
 
-    @Query("SELECT * FROM score")
+    @Query("SELECT * FROM score ORDER BY score DESC")
     fun getAll(): List<Score>
 
     @Query("SELECT * FROM score WHERE nickname = :nickname")
-    fun getByNickname(nickname: String): Score
+    fun getByNickname(nickname: String): Score?
 
     @Insert
     fun insert(score: Score)

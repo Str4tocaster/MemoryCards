@@ -1,20 +1,25 @@
 package com.valerymiller.memorycards.ui
 
+import com.valerymiller.memorycards.data.ScoreInteractor
+import com.valerymiller.memorycards.data.ScoreInteractorListener
 import com.valerymiller.memorycards.model.Score
 
 interface ScoresPresenter {
-    fun getScores(): List<Score>
+    fun loadScores()
 }
 
-class ScoresPresenterImpl : ScoresPresenter {
+class ScoresPresenterImpl(
+    private val view: ScoresView
+) : ScoresPresenter,
+    ScoreInteractorListener
+{
+    private val scoreInteractor = ScoreInteractor(this)
 
-    override fun getScores(): List<Score> {
-        return mutableListOf<Score>().apply {
-            add(Score(1, "Valera", 49200))
-            add(Score(2, "player", 37000))
-            add(Score(3, "alalal fjrnfrfj rfjrnfb  rfjrjfnrbfbrf rfjrf", 34000))
-            add(Score(4, "Str4tocaster", 23000))
-            add(Score(5, "Иванов Иван", 12000))
-        }
+    override fun loadScores() {
+        scoreInteractor.loadAllScores()
+    }
+
+    override fun onScoresLoaded(scores: List<Score>) {
+        view.updateView(scores)
     }
 }

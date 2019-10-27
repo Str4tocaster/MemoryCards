@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import com.valerymiller.memorycards.R
 import com.valerymiller.memorycards.data.CardsInteractor
 import com.valerymiller.memorycards.data.CardsInteractorListener
+import com.valerymiller.memorycards.data.ScoreInteractor
 import com.valerymiller.memorycards.model.Card
 import com.valerymiller.memorycards.model.Results
 import kotlin.random.Random
@@ -31,6 +32,7 @@ class MainPresenterImpl (
     CardsInteractorListener
 {
     private val cardsInteractor = CardsInteractor(this, context)
+    private val scoreInteractor = ScoreInteractor(null)
 
     private val closeHandler = ActionHandler(::closeCards)
     private val hideHandler = ActionHandler(::hideCards)
@@ -109,6 +111,11 @@ class MainPresenterImpl (
         hidedCards += 2
         if (hidedCards == cardNumber) {
             view.showWinAnimation()
+            scoreInteractor.saveScoresIfNeed(Results(
+                nickname,
+                actionCount,
+                calculateScores(cardNumber, actionCount)
+            ))
         }
     }
 
