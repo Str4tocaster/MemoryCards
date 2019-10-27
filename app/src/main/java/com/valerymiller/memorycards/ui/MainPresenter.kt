@@ -1,21 +1,12 @@
 package com.valerymiller.memorycards.ui
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Handler
-import android.os.Message
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.valerymiller.memorycards.R
-import com.valerymiller.memorycards.data.LoremPicsum
+import com.valerymiller.memorycards.data.CardsInteractor
+import com.valerymiller.memorycards.data.CardsInteractorListener
 import com.valerymiller.memorycards.model.Card
 import com.valerymiller.memorycards.model.Results
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.random.Random
 
 private const val PREF_NICKNAME = "nickname"
@@ -36,15 +27,16 @@ interface MainPresenter {
 class MainPresenterImpl (
     private val context: Context,
     private val view: MainView
-) : MainPresenter {
+) : MainPresenter,
+    CardsInteractorListener
+{
+    private val cardsInteractor = CardsInteractor(this, context)
 
-    private val loadedHandler = ActionHandler(::updateScreen)
     private val closeHandler = ActionHandler(::closeCards)
     private val hideHandler = ActionHandler(::hideCards)
 
     private var nickname = context.resources.getString(R.string.default_nickname)
     private var cardNumber = context.resources.getInteger(R.integer.card_number_min)
-    private var images: List<Bitmap> = listOf()
     private var actionCount = 0
     private val openCards = mutableListOf<Int>()
     private var hidedCards = 0
@@ -96,8 +88,12 @@ class MainPresenterImpl (
         )
     }
 
-    private fun updateScreen() {
-        view.updateScreen(generateCards(images), getRandomCardBack(), nickname)
+    override fun onCardsCreated(cards: List<Card>) {
+        updateScreen(cards)
+    }
+
+    private fun updateScreen(cards: List<Card>) {
+        view.updateScreen(cards, getRandomCardBack(), nickname)
         view.setActionCountText("0")
         view.hideProgress()
     }
@@ -126,10 +122,7 @@ class MainPresenterImpl (
 
     private fun updateGameField() {
         view.showProgress(cardNumber)
-        Thread(Runnable {
-            val drawables = mutableListOf<Bitmap>()
-            requestImage(drawables)
-        }).start()
+        cardsInteractor.createCards(cardNumber)
     }
 
     private fun loadSettings() {
@@ -147,50 +140,6 @@ class MainPresenterImpl (
                 commit()
             }
         }
-    }
-
-    private fun requestImage(images: MutableList<Bitmap>) {
-        if (images.size >= cardNumber / 2) {
-            this.images = images
-            loadedHandler.sendEmptyMessage(1)
-            return
-        }
-        val service = LoremPicsum.create()
-        service.randomImage().enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                val url = response.raw().request().url().toString()
-                Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            images.add(resource)
-                        }
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
-                requestImage(images)
-            }
-        })
-    }
-
-    private fun generateCards(images: List<Bitmap>): List<Card> {
-        val size = images.size * 2
-        val items = mutableListOf<Card>()
-        for (i in 1..size / 2) {
-            items.add(Card(i, images[i - 1]))
-            items.add(Card(i, images[i - 1]))
-        }
-        val result = mutableListOf<Card>()
-        for (i in 1..size) {
-            val j = Random.nextInt(0, items.size)
-            result.add(items[j])
-            items.removeAt(j)
-        }
-        return result
     }
 
     private fun calculateScores(cardNumber: Int, actionCount: Int): Int {
@@ -219,12 +168,5 @@ class MainPresenterImpl (
             Thread.sleep(HIDE_CARD_DELAY)
             hideHandler.sendEmptyMessage(1)
         }).start()
-    }
-
-    class ActionHandler(val action: () -> Unit): Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            action()
-        }
     }
 }
